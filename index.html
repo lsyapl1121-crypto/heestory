@@ -1,954 +1,792 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HEESTORY - 웹툰 에이전시</title>
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- React & ReactDOM CDN -->
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-  <!-- Babel Standalone with TypeScript support -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <style>
-    @keyframes fadeIn {
-      from { opacity: 0; transform: scale(0.96); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .animate-fadeIn {
-      animation: fadeIn 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-  </style>
-</head>
-<body class="bg-[#FCFCF9]">
-  <div id="root"></div>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HEESTORY — Webtoon Agency</title>
+<style>
+/*──────────────── RESET ────────────────*/
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,'Noto Sans KR',sans-serif;background:#fff;color:#111;overflow-x:hidden}
 
-  <script type="text/babel" data-presets="react,typescript">
-    const { useState, useEffect } = React;
-
-    const ChevronLeft = ({ className = "w-5 h-5" }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m15 18-6-6 6-6"/>
-      </svg>
-    );
-
-    const ChevronRight = ({ className = "w-5 h-5" }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m9 18 6-6-6-6"/>
-      </svg>
-    );
-
-    const Star = ({ className = "w-4 h-4" }) => (
-      <svg className={className} fill="currentColor" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-      </svg>
-    );
-
-    const X = ({ className = "w-5 h-5" }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
-      </svg>
-    );
-
-    const Sparkles = ({ className = "w-4 h-4" }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
-        <path d="M5 3v4"/><path d="M19 17v4"/><path d="M3 5h4"/><path d="M17 19h4"/>
-      </svg>
-    );
-
-    const ArrowUpRight = ({ className = "w-4 h-4" }) => (
-      <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M7 7h10v10"/><path d="M7 17 17 7"/>
-      </svg>
-    );
-
-
-
-
-interface Webtoon {
-  id: number;
-  title: string;
-  genreLabel: string;
-  author: string;
-  description: string;
-  views: string;
-  rating: number;
-  badge: string;
-  coverArt: React.ReactNode;
+/*──────────────── PIXEL GRID OVERLAY ────────────────*/
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(255,233,0,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,233,0,.025) 1px,transparent 1px);
+  background-size:16px 16px
 }
 
-const WEBTOONS: Webtoon[] = [
-  {
-    id: 1,
-    title: "용의 눈을 가진 검사",
-    genreLabel: "판타지 / 액션",
-    author: "글 스토리크루 · 그림 아티잔",
-    description: "봉인된 고대 멸악룡의 붉은 안구를 이식받은 검사 이안. 대륙을 집어삼키려는 마왕군에 맞서 각성한 마검의 칼날을 겨눈다!",
-    views: "1.2억회",
-    rating: 9.94,
-    badge: "글로벌 1위",
-    coverArt: (
-      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
-        <defs>
-          <linearGradient id="bg_char1" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#1e1b4b" />
-            <stop offset="50%" stopColor="#0f172a" />
-            <stop offset="100%" stopColor="#020617" />
-          </linearGradient>
-          <linearGradient id="blade_energy" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#38bdf8" />
-            <stop offset="50%" stopColor="#818cf8" />
-            <stop offset="100%" stopColor="#c084fc" />
-          </linearGradient>
-          <radialGradient id="dragonEye_glow" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%" stopColor="#ef4444" stopOpacity="0.9" />
-            <stop offset="100%" stopColor="#991b1b" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        {/* 배경 & 검기 이펙트 */}
-        <rect width="400" height="600" fill="url(#bg_char1)" />
-        <path d="M-50 400 L450 150 L400 100 L-100 350 Z" fill="url(#blade_energy)" opacity="0.35" />
-        <path d="M-20 480 L420 230" stroke="#38bdf8" strokeWidth="4" opacity="0.8" />
-        
-        {/* 남주인공: 판타지 검사 얼굴 (네이버웹툰 스타일) */}
-        {/* 목 & 갑옷 카라 */}
-        <path d="M160 380 L160 490 L240 490 L240 380 Z" fill="#fcd34d" opacity="0.1" />
-        <path d="M150 420 L200 470 L250 420 L270 540 L130 540 Z" fill="#1e293b" stroke="#ca8a04" strokeWidth="2" />
-        <path d="M170 340 L200 400 L230 340 Z" fill="#fed7aa" />
-        
-        {/* 얼굴 윤곽 */}
-        <polygon points="135,220 150,300 200,360 250,300 265,220 200,190" fill="#ffedd5" />
-        {/* 볼 & 턱 쉐딩 */}
-        <polygon points="150,300 200,360 250,300 230,340 200,355 170,340" fill="#fed7aa" />
+/*──────────────── VARIABLES ────────────────*/
+:root{
+  --butter:#FFE900;
+  --black:#111111;
+  --white:#FFFFFF;
+  --gray1:#1a1a1a;
+  --gray2:#333333;
+  --gray3:#666666;
+  --gray4:#999999;
+  --mono:'Courier New',Courier,monospace
+}
 
-        {/* 흑발 & 샤프한 웹툰 헤어스타일 */}
-        <path d="M120 230 Q140 130 200 130 Q260 130 280 230 Q290 290 280 320 L265 240 Q250 170 200 170 Q150 170 135 240 L120 320 Z" fill="#0f172a" />
-        {/* 앞머리 가닥들 */}
-        <path d="M130 180 L160 270 L175 220 L200 290 L225 210 L245 270 L270 180 Z" fill="#1e293b" />
-        <path d="M150 170 L180 250 L195 200 L210 260 L235 180 Z" fill="#090d16" />
+/*──────────────── SCROLLBAR ────────────────*/
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#111}
+::-webkit-scrollbar-thumb{background:var(--butter)}
 
-        {/* 날카로운 눈매 (좌: 정상안 / 우: 각성한 붉은 용의 눈) */}
-        {/* 왼쪽 눈 */}
-        <path d="M155 245 Q175 235 185 250 Q170 255 155 245 Z" fill="#0f172a" />
-        <circle cx="172" cy="246" r="3.5" fill="#38bdf8" />
-        <circle cx="174" cy="244" r="1.2" fill="#ffffff" />
-        {/* 오른쪽 각성 붉은 용의 눈 (흉터 + 오라) */}
-        <circle cx="228" cy="246" r="18" fill="url(#dragonEye_glow)" />
-        <line x1="228" y1="220" x2="228" y2="270" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" />
-        <path d="M215 250 Q225 235 245 245 Q230 255 215 250 Z" fill="#450a0a" stroke="#ef4444" strokeWidth="1" />
-        <ellipse cx="228" cy="246" rx="3.5" ry="5" fill="#fef08a" />
-        <ellipse cx="228" cy="246" rx="1.5" ry="4" fill="#dc2626" />
+/*──────────────── TOP NAV ────────────────*/
+#gnb{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:60px;
+  background:rgba(17,17,17,.95);
+  border-bottom:1px solid rgba(255,233,0,.15);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;
+  backdrop-filter:blur(10px)
+}
+.logo-group{
+  display:flex;align-items:center;gap:12px;
+  text-decoration:none;cursor:pointer;background:none;border:none
+}
+.logo-mark{
+  width:34px;height:34px;
+  background:var(--butter);
+  display:grid;grid-template-columns:repeat(4,1fr);gap:2px;padding:4px;
+  image-rendering:pixelated;flex-shrink:0
+}
+.logo-mark span{background:#111;display:block}
+.logo-text-name{
+  font-weight:900;font-size:17px;color:#fff;
+  letter-spacing:.15em;transition:color .2s;
+  display:block
+}
+.logo-text-sub{
+  font-family:var(--mono);font-size:9px;color:var(--gray3);
+  letter-spacing:.3em;text-transform:uppercase;transition:color .2s;
+  display:block
+}
+.logo-group:hover .logo-text-name{color:var(--butter)}
+.logo-group:hover .logo-text-sub{color:var(--butter)}
 
-        {/* 오똑한 코 & 굳게 다문 입술 */}
-        <path d="M198 275 L203 295 L196 298" stroke="#fba77a" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M188 322 Q200 326 212 322" stroke="#e17a55" strokeWidth="2.5" strokeLinecap="round" />
+.nav-nums{display:flex;gap:6px;align-items:center}
+.nn{
+  font-family:var(--mono);font-size:11px;font-weight:700;color:var(--gray3);
+  border:1px solid var(--gray2);padding:5px 10px;cursor:pointer;
+  background:transparent;transition:background .2s,color .2s,border-color .2s
+}
+.nn:hover,.nn.active{background:var(--butter);color:#111;border-color:var(--butter)}
 
-        {/* 하단 타이틀 영역 */}
-        <rect y="480" width="400" height="120" fill="url(#card_bottom_grad)" />
-      </svg>
-    )
-  },
-  {
-    id: 2,
-    title: "천재 연금술사의 만능 샵",
-    genreLabel: "현대 판타지 / 힐링",
-    author: "글 히스토리 · 그림 앨리스",
-    description: "차원 게이트 앞 골든 포션 전문 샵의 천재 안경 미소녀 연금술사! 전 세계 SS급 헌터들이 그녀의 포션을 구하기 위해 줄을 선다.",
-    views: "8,500만회",
-    rating: 9.88,
-    badge: "드라마화 확정",
-    coverArt: (
-      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
-        <defs>
-          <linearGradient id="bg_char2" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#064e3b" />
-            <stop offset="50%" stopColor="#022c22" />
-            <stop offset="100%" stopColor="#061a14" />
-          </linearGradient>
-          <radialGradient id="sparkle_alchemy" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%" stopColor="#34d399" stopOpacity="0.8" />
-            <stop offset="100%" stopColor="#064e3b" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="400" height="600" fill="url(#bg_char2)" />
-        <circle cx="280" cy="180" r="100" fill="url(#sparkle_alchemy)" />
+/*──────────────── SECTION BASE ────────────────*/
+.sec{position:relative;overflow:hidden}
+.sec-black{background:var(--black);color:#fff}
+.sec-white{background:var(--white);color:#111}
+.sec-inner{max-width:1180px;margin:0 auto;padding:0 40px}
+.sec-label{
+  font-family:var(--mono);font-size:10px;color:var(--butter);
+  letter-spacing:.3em;text-transform:uppercase;margin-bottom:14px
+}
+.big-num{
+  position:absolute;top:-10px;right:20px;
+  font-weight:900;font-size:min(18vw,180px);
+  color:rgba(255,233,0,.04);line-height:1;pointer-events:none;
+  font-family:var(--mono)
+}
 
-        {/* 여주인공: 귀여운 안경 연금술사 캐릭터 얼굴 */}
-        <polygon points="145,230 155,300 200,355 245,300 255,230 200,205" fill="#fff7ed" />
-        <polygon points="155,300 200,355 245,300 230,335 200,350 170,335" fill="#fed7aa" />
+/*──────────────── HERO ────────────────*/
+#hero{
+  min-height:100vh;background:var(--black);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding-top:60px;position:relative;overflow:hidden
+}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(255,233,0,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(255,233,0,.05) 1px,transparent 1px);
+  background-size:40px 40px
+}
+.hero-illo{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  opacity:.22;pointer-events:none;user-select:none
+}
+.hero-copy{position:relative;z-index:2;text-align:center;padding:0 24px;max-width:860px}
+.hero-eyebrow{
+  font-family:var(--mono);font-size:10px;color:var(--butter);
+  border:1px solid rgba(255,233,0,.35);padding:6px 18px;
+  letter-spacing:.3em;display:inline-block;margin-bottom:32px
+}
+.hero-h1{font-weight:900;font-size:clamp(2.4rem,7vw,5.2rem);line-height:1.1;margin-bottom:24px}
+.hero-h1 .line1{color:#fff}
+.hero-h1 .line2{
+  -webkit-text-stroke:2px var(--butter);color:transparent;
+  text-shadow:0 0 50px rgba(255,233,0,.2);display:block;margin-top:6px
+}
+.hero-sub{color:var(--gray4);font-size:clamp(.9rem,2vw,1.05rem);line-height:1.75;max-width:480px;margin:0 auto 40px}
+.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap}
+.btn-primary{
+  background:var(--butter);color:#111;font-weight:900;font-size:13px;
+  padding:13px 30px;letter-spacing:.1em;cursor:pointer;border:none;transition:opacity .2s;
+  display:inline-block;text-decoration:none
+}
+.btn-primary:hover{opacity:.8}
+.btn-outline{
+  background:transparent;color:var(--gray4);font-size:13px;
+  padding:12px 30px;letter-spacing:.1em;cursor:pointer;
+  border:1px solid var(--gray2);transition:border-color .2s,color .2s
+}
+.btn-outline:hover{border-color:var(--butter);color:var(--butter)}
+.hero-scroll{
+  position:absolute;bottom:30px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  font-family:var(--mono);font-size:9px;color:var(--gray3);letter-spacing:.3em
+}
+.scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gray3),transparent)}
 
-        {/* 산뜻한 민트/에메랄드빛 단발 웨이브 헤어 */}
-        <path d="M125 210 Q140 120 200 120 Q260 120 275 210 Q290 280 270 350 L250 340 Q260 280 255 220 Q240 160 200 160 Q160 160 145 220 Q140 280 150 340 L130 350 Z" fill="#059669" />
-        {/* 뱅 앞머리 */}
-        <path d="M140 170 Q200 190 260 170 L255 230 Q200 245 145 230 Z" fill="#10b981" />
-        <path d="M165 230 L175 260 L185 230 M215 230 L225 260 L235 230" stroke="#059669" strokeWidth="2" />
+/*──────────────── PORTFOLIO (01) ────────────────*/
+#portfolio{padding:110px 0}
+.sec-h2{font-weight:900;font-size:clamp(2rem,5vw,3.6rem);line-height:1.15}
+.sec-h2 span{-webkit-text-stroke:1.5px #111;color:transparent}
+.sec-desc{color:var(--gray3);font-size:14px;max-width:440px;margin:14px 0 60px;line-height:1.7}
 
-        {/* 둥근 골드 테 안경 */}
-        <circle cx="170" cy="255" r="18" stroke="#fbbf24" strokeWidth="3" fill="none" />
-        <circle cx="230" cy="255" r="18" stroke="#fbbf24" strokeWidth="3" fill="none" />
-        <line x1="188" y1="255" x2="212" y2="255" stroke="#fbbf24" strokeWidth="3" />
+#carousel-stage{
+  position:relative;height:440px;display:flex;align-items:center;justify-content:center;
+  perspective:1200px;user-select:none
+}
+.card{
+  position:absolute;width:260px;height:390px;cursor:pointer;overflow:hidden;
+  transition:transform .7s cubic-bezier(.4,0,.2,1),opacity .5s,box-shadow .3s
+}
+.carousel-controls{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:30px}
+.car-btn{
+  width:44px;height:44px;border:2px solid #111;background:transparent;
+  font-size:20px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;
+  transition:background .2s,color .2s
+}
+.car-btn:hover{background:#111;color:var(--butter)}
+#dots{display:flex;gap:6px;align-items:center}
+.dot{height:7px;border:none;cursor:pointer;transition:all .3s;background:var(--gray2)}
 
-        {/* 초롱초롱한 에메랄드 눈망울 */}
-        <circle cx="170" cy="255" r="8" fill="#047857" />
-        <circle cx="170" cy="255" r="5" fill="#34d399" />
-        <circle cx="168" cy="252" r="2.5" fill="#ffffff" />
-        <circle cx="230" cy="255" r="8" fill="#047857" />
-        <circle cx="230" cy="255" r="5" fill="#34d399" />
-        <circle cx="228" cy="252" r="2.5" fill="#ffffff" />
+/*──────────────── WHAT WE DO (02) ────────────────*/
+#whatwedo{padding:110px 0}
+.wwd-h2{font-weight:900;font-size:clamp(2rem,5vw,3.4rem);line-height:1.2;margin-bottom:60px}
+.wwd-h2 em{color:var(--butter);font-style:normal}
+.wwd-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+@media(max-width:700px){.wwd-grid{grid-template-columns:1fr}}
+.wwd-quote{
+  font-size:17px;line-height:1.8;color:#ccc;
+  border-left:4px solid var(--butter);padding-left:20px;margin-bottom:28px
+}
+.wwd-body{font-size:13px;line-height:1.8;color:var(--gray4)}
+.wwd-cards{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.wwd-card{padding:22px 20px;border:1px solid var(--gray2);transition:border-color .2s;cursor:default}
+.wwd-card:hover{border-color:var(--butter)}
+.wwd-card-label{font-family:var(--mono);font-size:10px;color:var(--butter);letter-spacing:.2em;margin-bottom:10px}
+.wwd-card-title{color:#fff;font-weight:700;font-size:13px;margin-bottom:6px}
+.wwd-card-desc{color:var(--gray4);font-size:11px;line-height:1.6}
 
-        {/* 홍조 & 미소 */}
-        <ellipse cx="150" cy="285" rx="8" ry="4" fill="#f43f5e" opacity="0.4" />
-        <ellipse cx="250" cy="285" rx="8" ry="4" fill="#f43f5e" opacity="0.4" />
-        <path d="M192 315 Q200 325 208 315" stroke="#f43f5e" strokeWidth="2.5" strokeLinecap="round" />
+/*──────────────── VISION (03) ────────────────*/
+#vision{padding:110px 0}
+.vision-h2{
+  font-weight:900;font-size:clamp(1.6rem,4.5vw,3rem);
+  line-height:1.25;text-align:center;margin-bottom:60px
+}
+.vision-h2 span{-webkit-text-stroke:1.5px #111;color:transparent}
+.quotes-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px;margin:0 auto 70px}
+@media(max-width:680px){.quotes-grid{grid-template-columns:1fr}}
+.quote-card{background:var(--gray1);border-left:4px solid var(--butter);padding:28px 28px 24px}
+.quote-text{color:#ddd;font-size:14px;line-height:1.85;font-style:italic;margin-bottom:22px}
+.quote-person{display:flex;align-items:center;gap:12px}
+.quote-avatar{
+  width:36px;height:36px;background:var(--butter);color:#111;
+  font-weight:900;font-size:14px;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;image-rendering:pixelated
+}
+.quote-name{color:#fff;font-weight:700;font-size:13px}
+.quote-role{font-family:var(--mono);font-size:9px;color:var(--gray3);letter-spacing:.2em;margin-top:2px}
+.stats-bar{
+  max-width:800px;margin:0 auto;
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--gray2)
+}
+.stat-item{background:var(--black);text-align:center;padding:32px 0}
+.stat-num{font-weight:900;font-size:2.2rem;color:var(--butter)}
+.stat-label{font-family:var(--mono);font-size:9px;color:var(--gray4);letter-spacing:.25em;margin-top:6px}
 
-        {/* 마법 포션 병을 들고 있는 손 */}
-        <g transform="translate(230, 360)">
-          <path d="M20 0 L40 0 L40 15 L55 50 C60 65 50 80 30 80 C10 80 0 65 5 50 L20 15 Z" fill="#10b981" stroke="#facc15" strokeWidth="3" opacity="0.9" />
-          <circle cx="30" cy="55" r="6" fill="#fef08a" />
-        </g>
-      </svg>
-    )
-  },
-  {
-    id: 3,
-    title: "내 연애는 로딩 중",
-    genreLabel: "로맨스 코미디",
-    author: "글/그림 핑크문 Studio",
-    description: "게임 속 랭킹 1위 길드마스터와 까칠하고 잘생긴 본부장님의 앙큼살벌 사내 밀당 로맨스!",
-    views: "6,400만회",
-    rating: 9.91,
-    badge: "독점 연재",
-    coverArt: (
-      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
-        <defs>
-          <linearGradient id="bg_char3" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4c0519" />
-            <stop offset="50%" stopColor="#1f121d" />
-            <stop offset="100%" stopColor="#0c070e" />
-          </linearGradient>
-          <radialGradient id="pink_glow" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%" stopColor="#fb7185" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#881337" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="400" height="600" fill="url(#bg_char3)" />
-        <circle cx="200" cy="200" r="160" fill="url(#pink_glow)" />
+/*──────────────── PROCESS (04) ────────────────*/
+#process{padding:110px 0}
+.process-h2{font-weight:900;font-size:clamp(2rem,5vw,3.4rem);line-height:1.2;margin-bottom:60px}
+.process-h2 em{color:var(--butter);font-style:normal}
+.process-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:0}
+@media(max-width:700px){.process-grid{grid-template-columns:1fr}}
+.process-step{border-top:3px solid var(--butter);padding:28px 28px 36px}
+.process-step+.process-step{border-left:1px solid var(--gray2)}
+@media(max-width:700px){.process-step+.process-step{border-left:none}}
+.ps-num{font-family:var(--mono);font-size:10px;color:var(--butter);letter-spacing:.25em;margin-bottom:18px}
+.ps-title{color:#fff;font-weight:900;font-size:17px;margin-bottom:12px}
+.ps-desc{color:var(--gray4);font-size:12px;line-height:1.8;margin-bottom:18px}
+.ps-tags{display:flex;flex-wrap:wrap;gap:6px}
+.ps-tag{font-family:var(--mono);font-size:10px;color:var(--gray4);border:1px solid var(--gray2);padding:3px 8px}
 
-        {/* 남주인공: 로맨스 웹툰 스타일 훈남 본부장 얼굴 */}
-        <path d="M165 370 L165 470 L235 470 L235 370 Z" fill="#fed7aa" />
-        {/* 화이트 셔츠 & 블랙 타이/수트 */}
-        <path d="M140 430 L200 470 L260 430 L280 550 L120 550 Z" fill="#0f172a" />
-        <polygon points="175,430 200,470 225,430 215,480 185,480" fill="#ffffff" />
-        <polygon points="195,445 205,445 208,520 192,520" fill="#e11d48" />
+/*──────────────── CONTACT (05) ────────────────*/
+#contact{padding:110px 0}
+.contact-h2{font-weight:900;font-size:clamp(2rem,5vw,3.6rem);line-height:1.2;margin-bottom:60px}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start}
+@media(max-width:680px){.contact-grid{grid-template-columns:1fr}}
+.map-wrap{position:relative;width:100%;height:340px;background:var(--gray1);overflow:hidden}
+.map-wrap iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.map-fallback{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:8px;background:var(--gray1)
+}
+.map-addr{color:#ccc;font-size:13px;font-weight:700;text-align:center}
+.map-addr-sub{color:var(--gray4);font-size:11px}
+.map-link-btn{
+  background:var(--butter);color:#111;font-family:var(--mono);font-size:11px;font-weight:700;
+  padding:8px 18px;text-decoration:none;cursor:pointer;margin-top:6px;display:inline-block
+}
+.map-label{font-family:var(--mono);font-size:10px;color:var(--gray3);letter-spacing:.2em;margin-top:8px}
+.contact-info{display:flex;flex-direction:column;gap:36px;justify-content:center}
+.ci-label{font-family:var(--mono);font-size:10px;color:var(--gray4);letter-spacing:.25em;margin-bottom:8px}
+.ci-email{font-weight:900;font-size:clamp(1.1rem,2.5vw,1.6rem);color:#111;text-decoration:none;word-break:break-all;transition:color .2s}
+.ci-email:hover{color:var(--butter)}
+.ci-studio{font-size:16px;font-weight:700;color:#111}
+.ci-studio-sub{font-size:12px;color:var(--gray3);margin-top:4px}
 
-        {/* 날렵한 V라인 얼굴 */}
-        <polygon points="140,225 155,295 200,355 245,295 260,225 200,200" fill="#fff7ed" />
-        <polygon points="155,295 200,355 245,295 230,335 200,350 170,335" fill="#fde68a" opacity="0.5" />
+/*──────────────── FOOTER ────────────────*/
+footer{background:#000;border-top:2px solid var(--butter);padding:32px 40px}
+.footer-inner{
+  max-width:1180px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px
+}
+.footer-brand{font-weight:900;color:#fff;font-size:14px;letter-spacing:.2em}
+.footer-copy{font-family:var(--mono);font-size:9px;color:var(--gray3);letter-spacing:.15em;margin-top:4px}
+.footer-nav{display:flex;gap:6px;flex-wrap:wrap}
+.fn{
+  font-family:var(--mono);font-size:10px;color:var(--gray4);
+  border:1px solid var(--gray2);padding:4px 10px;cursor:pointer;background:transparent;
+  transition:border-color .2s,color .2s
+}
+.fn:hover{border-color:var(--butter);color:var(--butter)}
 
-        {/* 쉼표머리 스타일 브라운/애쉬 블랙 헤어 */}
-        <path d="M125 220 Q145 125 200 125 Q255 125 275 220 L265 260 Q255 160 200 160 Q145 160 135 260 Z" fill="#1c1917" />
-        {/* 자연스러운 가르마 & 쉼표 앞머리 컬 */}
-        <path d="M135 170 Q170 170 180 245 Q165 245 150 210 Z" fill="#292524" />
-        <path d="M185 165 Q230 165 240 250 Q255 220 265 175 Z" fill="#292524" />
+/*──────────────── MODAL ────────────────*/
+#modal{
+  position:fixed;inset:0;z-index:200;display:none;
+  align-items:center;justify-content:center;padding:20px;
+  background:rgba(0,0,0,.82);backdrop-filter:blur(6px)
+}
+#modal.open{display:flex}
+.modal-box{
+  background:#fff;max-width:540px;width:100%;
+  border:2px solid var(--butter);position:relative;display:flex;overflow:hidden
+}
+#modal-close{
+  position:absolute;top:12px;right:12px;z-index:10;
+  width:32px;height:32px;background:#111;color:#fff;border:none;cursor:pointer;
+  font-size:16px;font-weight:900;display:flex;align-items:center;justify-content:center;
+  transition:background .2s
+}
+#modal-close:hover{background:var(--butter);color:#111}
+#modal-cover{width:160px;flex-shrink:0;overflow:hidden}
+.modal-info{padding:22px 22px 22px 18px;flex:1;display:flex;flex-direction:column}
+.mi-genre{font-family:var(--mono);font-size:9px;color:var(--gray3);letter-spacing:.2em;margin-bottom:8px}
+.mi-title{font-weight:900;font-size:19px;color:#111;line-height:1.2;margin-bottom:10px}
+.mi-syn{font-size:12px;color:#555;line-height:1.75;margin-bottom:14px;flex:1}
+.mi-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.mi-badge{background:var(--butter);color:#111;font-family:var(--mono);font-size:10px;font-weight:700;padding:3px 9px}
+.mi-views{font-family:var(--mono);font-size:10px;color:var(--gray4)}
+.mi-close-btn{
+  width:100%;padding:10px;background:#111;color:var(--butter);
+  font-weight:900;font-size:12px;letter-spacing:.1em;border:none;cursor:pointer;transition:background .2s
+}
+.mi-close-btn:hover{background:var(--butter);color:#111}
+</style>
+</head>
+<body>
 
-        {/* 깊고 그윽한 눈빛 & 속눈썹 */}
-        <path d="M155 245 Q172 235 185 248" stroke="#1c1917" strokeWidth="2.5" strokeLinecap="round" />
-        <ellipse cx="170" cy="252" rx="4" ry="5" fill="#4c0519" />
-        <circle cx="171" cy="250" r="1.5" fill="#ffffff" />
+<!-- ══════════════════════════════════════════
+     TOP NAV
+════════════════════════════════════════════ -->
+<header id="gnb">
+  <button class="logo-group" onclick="goTo('hero')">
+    <div class="logo-mark">
+      <span style="grid-column:1/3"></span>
+      <span style="grid-column:3/5"></span>
+      <span style="grid-column:1/5"></span>
+      <span style="grid-column:1/3"></span>
+      <span style="grid-column:3/5"></span>
+    </div>
+    <div>
+      <span class="logo-text-name">HEESTORY</span>
+      <span class="logo-text-sub">Webtoon Agency</span>
+    </div>
+  </button>
 
-        <path d="M215 248 Q228 235 245 245" stroke="#1c1917" strokeWidth="2.5" strokeLinecap="round" />
-        <ellipse cx="230" cy="252" rx="4" ry="5" fill="#4c0519" />
-        <circle cx="229" cy="250" r="1.5" fill="#ffffff" />
+  <nav class="nav-nums">
+    <button class="nn" onclick="goTo('portfolio')">01</button>
+    <button class="nn" onclick="goTo('whatwedo')">02</button>
+    <button class="nn" onclick="goTo('vision')">03</button>
+    <button class="nn" onclick="goTo('process')">04</button>
+    <button class="nn" onclick="goTo('contact')">05</button>
+  </nav>
+</header>
 
-        {/* 오똑한 콧날 & 매력적인 입꼬리 */}
-        <path d="M198 265 L203 290 L196 294" stroke="#fba77a" strokeWidth="2" strokeLinecap="round" />
-        <path d="M190 322 Q200 324 212 318" stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round" />
+<!-- ══════════════════════════════════════════
+     HERO
+════════════════════════════════════════════ -->
+<section id="hero" class="sec sec-black">
+  <div class="hero-grid"></div>
 
-        {/* 핑크빛 반짝이 & 게임 하트 아이콘 */}
-        <path d="M290 140 Q305 120 320 140 Q335 160 290 195 Q245 160 260 140 Q275 120 290 140 Z" fill="#f43f5e" opacity="0.8" />
-      </svg>
-    )
-  },
-  {
-    id: 4,
-    title: "그림자 제국의 흑막 영애",
-    genreLabel: "로맨스 판타지",
-    author: "글 벨라 · 그림 로판 랩",
-    description: "시한부 악녀로 빙의한 은발의 대공 영애 엘레나. 우아하고 치명적인 지략으로 황실 전체를 손바닥 위에 올려놓는다.",
-    views: "9,800만회",
-    rating: 9.96,
-    badge: "글로벌 톱5",
-    coverArt: (
-      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
-        <defs>
-          <linearGradient id="bg_char4" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#2e1065" />
-            <stop offset="50%" stopColor="#1e1b4b" />
-            <stop offset="100%" stopColor="#090514" />
-          </linearGradient>
-          <radialGradient id="purple_magic" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%" stopColor="#c084fc" stopOpacity="0.7" />
-            <stop offset="100%" stopColor="#2e1065" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="400" height="600" fill="url(#bg_char4)" />
-        <circle cx="200" cy="190" r="170" fill="url(#purple_magic)" />
+  <div class="hero-illo" aria-hidden="true">
+    <svg viewBox="0 0 1200 700" fill="none" style="width:100%;max-width:1100px">
+      <rect x="20"  y="20" width="550" height="660" stroke="#FFE900" stroke-width="3" fill="none" opacity=".55"/>
+      <rect x="610" y="20" width="570" height="310" stroke="#FFE900" stroke-width="3" fill="none" opacity=".55"/>
+      <rect x="610" y="370" width="270" height="310" stroke="#FFE900" stroke-width="2" fill="none" opacity=".35"/>
+      <rect x="920" y="370" width="260" height="310" stroke="#FFE900" stroke-width="2" fill="none" opacity=".35"/>
+      <line x1="295" y1="350" x2="0"   y2="100" stroke="#FFE900" stroke-width="1" opacity=".08"/>
+      <line x1="295" y1="350" x2="0"   y2="350" stroke="#FFE900" stroke-width="1" opacity=".08"/>
+      <line x1="295" y1="350" x2="100" y2="680" stroke="#FFE900" stroke-width="1" opacity=".08"/>
+      <line x1="295" y1="350" x2="570" y2="680" stroke="#FFE900" stroke-width="1" opacity=".08"/>
+      <ellipse cx="295" cy="210" rx="65" ry="80" fill="#FFE900" opacity=".08"/>
+      <rect x="248" y="290" width="94" height="180" rx="4" fill="#FFE900" opacity=".06"/>
+      <line x1="248" y1="360" x2="160" y2="440" stroke="#FFE900" stroke-width="8" stroke-linecap="round" opacity=".08"/>
+      <line x1="342" y1="350" x2="430" y2="400" stroke="#FFE900" stroke-width="8" stroke-linecap="round" opacity=".08"/>
+      <circle cx="895" cy="175" r="130" stroke="#FFE900" stroke-width="2" fill="none" opacity=".12"/>
+      <circle cx="895" cy="175" r="65"  fill="#FFE900" opacity=".05"/>
+      <rect x="640" y="50" width="9" height="9" fill="#FFE900" opacity=".5"/>
+      <rect x="653" y="50" width="9" height="9" fill="#FFE900" opacity=".3"/>
+      <rect x="666" y="50" width="9" height="9" fill="#FFE900" opacity=".5"/>
+      <rect x="640" y="63" width="9" height="9" fill="#FFE900" opacity=".2"/>
+      <rect x="666" y="63" width="9" height="9" fill="#FFE900" opacity=".2"/>
+      <rect x="640" y="390" width="9" height="9" fill="#FFE900" opacity=".4"/>
+      <rect x="653" y="390" width="9" height="9" fill="#FFE900" opacity=".2"/>
+      <rect x="666" y="390" width="9" height="9" fill="#FFE900" opacity=".4"/>
+    </svg>
+  </div>
 
-        {/* 화려한 황실 드레스 넥라인 & 루비 목걸이 */}
-        <path d="M165 370 L165 440 L235 440 L235 370 Z" fill="#fdf2f8" />
-        <path d="M130 430 Q200 480 270 430 L290 550 L110 550 Z" fill="#3b0764" stroke="#eab308" strokeWidth="2" />
-        {/* 목걸이 & 물방울 보석 */}
-        <path d="M170 405 Q200 425 230 405" stroke="#facc15" strokeWidth="2.5" fill="none" />
-        <ellipse cx="200" cy="425" rx="6" ry="9" fill="#dc2626" stroke="#fef08a" strokeWidth="1.5" />
+  <div class="hero-copy">
+    <div class="hero-eyebrow">[ HEESTORY IP STUDIO — EST. 2024 ]</div>
+    <h1 class="hero-h1">
+      <span class="line1">당신의 이야기는</span>
+      <span class="line2">우리의 세계가 된다</span>
+    </h1>
+    <p class="hero-sub">
+      살아 숨 쉬는 캐릭터와 압도적인 스케일의 스토리텔링,<br>
+      전 세계 독자들을 열광시키는 오리지널 웹툰을 만듭니다.
+    </p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="goTo('portfolio')">라인업 보기 →</button>
+      <button class="btn-outline" onclick="goTo('contact')">연락하기</button>
+    </div>
+  </div>
 
-        {/* 여주인공: 매혹적인 은발 악녀 영애 얼굴 */}
-        <polygon points="145,225 155,295 200,350 245,295 255,225 200,200" fill="#fff1f2" />
+  <div class="hero-scroll">
+    <span>SCROLL</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
 
-        {/* 풍성하고 화려한 은발 롱 웨이브 헤어 */}
-        <path d="M110 210 Q140 100 200 100 Q260 100 290 210 Q315 320 285 450 L255 430 Q275 320 260 220 Q240 145 200 145 Q160 145 140 220 Q125 320 145 430 L115 450 Q85 320 110 210 Z" fill="#e2e8f0" />
-        <path d="M140 160 Q170 160 185 240 Q200 160 230 160 Q245 200 255 240" stroke="#cbd5e1" strokeWidth="3" fill="none" />
+<!-- ══════════════════════════════════════════
+     01 — PORTFOLIO
+════════════════════════════════════════════ -->
+<section id="portfolio" class="sec sec-white">
+  <div class="big-num">01</div>
+  <div class="sec-inner" style="padding-top:110px;padding-bottom:110px">
+    <p class="sec-label">[ 01 / PORTFOLIO ]</p>
+    <h2 class="sec-h2">하나의 세계가<br><span>완성되는 순간들</span></h2>
+    <p class="sec-desc">대표 작품들을 둘러보세요. 활성화된 카드를 클릭하면 상세 정보를 볼 수 있습니다.</p>
 
-        {/* 골드 & 보석 티아라 (왕관) */}
-        <polygon points="160,140 180,110 200,145 220,110 240,140" fill="#facc15" stroke="#fef08a" strokeWidth="1" />
-        <circle cx="200" cy="135" r="3.5" fill="#dc2626" />
+    <div id="carousel-stage"></div>
 
-        {/* 도도하고 날카로운 고양이상 보랏빛 눈매 */}
-        <path d="M152 240 Q172 230 186 242 Q170 250 152 240 Z" fill="#1e1b4b" />
-        <ellipse cx="170" cy="242" rx="4.5" ry="5.5" fill="#9333ea" />
-        <ellipse cx="170" cy="242" rx="2" ry="4" fill="#f3e8ff" />
-        <circle cx="168" cy="239" r="1.5" fill="#ffffff" />
-        {/* 아이라인 꼬리 샥 */}
-        <path d="M184 240 L190 234" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" />
+    <div class="carousel-controls">
+      <button class="car-btn" id="btn-prev">&#8249;</button>
+      <div id="dots"></div>
+      <button class="car-btn" id="btn-next">&#8250;</button>
+    </div>
+  </div>
+</section>
 
-        <path d="M214 242 Q228 230 248 240 Q230 250 214 242 Z" fill="#1e1b4b" />
-        <ellipse cx="230" cy="242" rx="4.5" ry="5.5" fill="#9333ea" />
-        <ellipse cx="230" cy="242" rx="2" ry="4" fill="#f3e8ff" />
-        <circle cx="228" cy="239" r="1.5" fill="#ffffff" />
-        <path d="M246 240 L252 234" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" />
+<!-- ══════════════════════════════════════════
+     02 — WHAT WE DO
+════════════════════════════════════════════ -->
+<section id="whatwedo" class="sec sec-black">
+  <div class="big-num">02</div>
+  <div class="sec-inner" style="padding-top:110px;padding-bottom:110px">
+    <p class="sec-label">[ 02 / WHAT WE DO ]</p>
+    <h2 class="wwd-h2">웹툰 작가와 작품을<br><em>발굴부터 확장까지.</em></h2>
 
-        {/* 붉은 립 & 매혹적인 미소 */}
-        <path d="M198 265 L202 288 L196 292" stroke="#f472b6" strokeWidth="1.8" strokeLinecap="round" />
-        <path d="M190 318 Q200 326 210 318" stroke="#be123c" strokeWidth="3" strokeLinecap="round" />
-      </svg>
-    )
-  },
-  {
-    id: 5,
-    title: "무림 레벨업 센터",
-    genreLabel: "무협 / 현대 액션",
-    author: "글 강호 · 그림 무극",
-    description: "화산파의 붉은 매화검존이 현대 강남 헌터 시험장에 강림했다. 압도적인 무공 수련으로 현대 헌터 랭킹 1위를 탈환한다!",
-    views: "1.5억회",
-    rating: 9.95,
-    badge: "게임화 확정",
-    coverArt: (
-      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
-        <defs>
-          <linearGradient id="bg_char5" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#450a0a" />
-            <stop offset="50%" stopColor="#18181b" />
-            <stop offset="100%" stopColor="#09090b" />
-          </linearGradient>
-          <radialGradient id="flame_aura" cx="0.5" cy="0.5" r="0.5">
-            <stop offset="0%" stopColor="#f97316" stopOpacity="0.8" />
-            <stop offset="60%" stopColor="#ef4444" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#000000" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-        <rect width="400" height="600" fill="url(#bg_char5)" />
-        <circle cx="200" cy="210" r="160" fill="url(#flame_aura)" />
+    <div class="wwd-grid">
+      <div>
+        <p class="wwd-quote">
+          웹툰 작가와 작품을 발굴하고 계약, 제작, 유통, 저작권 사업까지 관리하는 전문 기업.
+        </p>
+        <p class="wwd-body">
+          히스토리는 단순한 제작사가 아닙니다. 스토리의 씨앗을 발견하고, 고퀄리티 만화로 키우고, 전 세계 독자에게 닿도록 유통하며, 그 IP가 드라마·영화·굿즈로 성장하는 여정 전체를 함께합니다.
+        </p>
+      </div>
+      <div class="wwd-cards">
+        <div class="wwd-card">
+          <div class="wwd-card-label">&#9670; DISCOVER</div>
+          <div class="wwd-card-title">IP 발굴 &amp; 기획</div>
+          <div class="wwd-card-desc">원석 스토리를 찾고 시장성 있는 IP로 정립합니다.</div>
+        </div>
+        <div class="wwd-card">
+          <div class="wwd-card-label">&#9670; DEVELOP</div>
+          <div class="wwd-card-title">제작 파이프라인</div>
+          <div class="wwd-card-desc">콘티·작화·채색 분업화 전문 스튜디오 운영.</div>
+        </div>
+        <div class="wwd-card">
+          <div class="wwd-card-label">&#9670; DISTRIBUTE</div>
+          <div class="wwd-card-title">플랫폼 유통</div>
+          <div class="wwd-card-desc">네이버·카카오·라인 등 동시 연재 협상 및 조율.</div>
+        </div>
+        <div class="wwd-card">
+          <div class="wwd-card-label">&#9670; EXPAND</div>
+          <div class="wwd-card-title">IP 사업 확장</div>
+          <div class="wwd-card-desc">드라마·영화·굿즈 OSMU 전략 전면 지원.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        {/* 휘날리는 붉은 매화 꽃잎 이펙트 */}
-        <ellipse cx="120" cy="160" rx="12" ry="6" fill="#f43f5e" transform="rotate(-30 120 160)" />
-        <ellipse cx="280" cy="140" rx="14" ry="7" fill="#fb7185" transform="rotate(40 280 140)" />
-        <ellipse cx="260" cy="270" rx="10" ry="5" fill="#f43f5e" transform="rotate(15 260 270)" />
+<!-- ══════════════════════════════════════════
+     03 — VISION
+════════════════════════════════════════════ -->
+<section id="vision" class="sec sec-white">
+  <div class="big-num">03</div>
+  <div class="sec-inner" style="padding-top:110px;padding-bottom:110px">
+    <p class="sec-label">[ 03 / VISION ]</p>
+    <h2 class="vision-h2">
+      우리의 세계와 당신의 세계가<br>
+      <span>만나는 순간을 제작합니다.</span>
+    </h2>
 
-        {/* 동양풍 무사 복장 & 붉은 깃 카라 */}
-        <path d="M165 370 L165 480 L235 480 L235 370 Z" fill="#fed7aa" />
-        <path d="M140 430 L200 475 L260 430 L280 550 L120 550 Z" fill="#18181b" stroke="#ef4444" strokeWidth="2.5" />
-        <path d="M170 430 L200 475 L180 550" stroke="#f59e0b" strokeWidth="2" />
+    <div class="quotes-grid">
+      <div class="quote-card">
+        <p class="quote-text">
+          "서로의 관점이 같아져서 눈만봐도 알 것 같은 거 있잖아요. 그 감동을 저는 웹툰으로 그려보고 싶어요."
+        </p>
+        <div class="quote-person">
+          <div class="quote-avatar">T</div>
+          <div>
+            <div class="quote-name">Thomas</div>
+            <div class="quote-role">Story Director</div>
+          </div>
+        </div>
+      </div>
+      <div class="quote-card">
+        <p class="quote-text">
+          "웹툰으로 세상을 배웠어요. 극강으로 노력하면 어떻게 될까라던가, 등장인물들이 한마디씩 던지는데 그게 제 마음에 들어왔을 때라던지."
+        </p>
+        <div class="quote-person">
+          <div class="quote-avatar">W</div>
+          <div>
+            <div class="quote-name">William</div>
+            <div class="quote-role">IP Planner</div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        {/* 날카롭고 다부진 턱선 */}
-        <polygon points="135,225 150,295 200,355 250,295 265,225 200,195" fill="#ffedd5" />
-        <polygon points="150,295 200,355 250,295 235,335 200,350 165,335" fill="#fed7aa" />
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-num">5+</div>
+        <div class="stat-label">WORKS</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">3</div>
+        <div class="stat-label">PLATFORMS</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">&#8734;</div>
+        <div class="stat-label">STORIES</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        {/* 흩날리는 와일드 롱 흑발 & 붉은 머리끈 */}
-        <path d="M115 230 Q140 115 200 115 Q260 115 285 230 Q305 340 280 430 L255 410 Q270 310 260 210 Q240 150 200 150 Q160 150 140 210 Q130 310 145 410 L120 430 Z" fill="#09090b" />
-        {/* 이마의 붉은 화산파 인장 */}
-        <path d="M195 205 Q200 190 205 205 Q200 215 195 205 Z" fill="#ef4444" />
+<!-- ══════════════════════════════════════════
+     04 — PROCESS
+════════════════════════════════════════════ -->
+<section id="process" class="sec sec-black">
+  <div class="big-num">04</div>
+  <div class="sec-inner" style="padding-top:110px;padding-bottom:110px">
+    <p class="sec-label">[ 04 / PROCESS ]</p>
+    <h2 class="process-h2">어떻게 <em>만드나요?</em></h2>
 
-        {/* 살기 넘치는 카리스마 맹렬한 눈매 */}
-        <path d="M152 245 L185 240 Q170 255 152 245 Z" fill="#09090b" />
-        <ellipse cx="170" cy="245" rx="4" ry="4.5" fill="#ea580c" />
-        <circle cx="170" cy="245" r="1.5" fill="#fef08a" />
-        {/* 짙은 검미 (무협 눈썹) */}
-        <polygon points="145,230 185,225 180,232 148,235" fill="#09090b" />
+    <div class="process-grid">
+      <div class="process-step">
+        <div class="ps-num">STEP 01</div>
+        <div class="ps-title">작품 제작 및 편집</div>
+        <p class="ps-desc">콘티, 작화, 채색 분업화와 원고 교정, 피드백 제공으로 매화 극장판 수준의 퀄리티를 완성합니다.</p>
+        <div class="ps-tags">
+          <span class="ps-tag"># 콘티</span>
+          <span class="ps-tag"># 작화</span>
+          <span class="ps-tag"># 채색</span>
+          <span class="ps-tag"># 교정</span>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">STEP 02</div>
+        <div class="ps-title">플랫폼 유통 및 계약</div>
+        <p class="ps-desc">네이버웹툰, 카카오페이지 등 플랫폼과의 연재 협상 및 심의 조율로 최적의 데뷔 조건을 설계합니다.</p>
+        <div class="ps-tags">
+          <span class="ps-tag"># 네이버웹툰</span>
+          <span class="ps-tag"># 카카오페이지</span>
+          <span class="ps-tag"># 심의</span>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="ps-num">STEP 03</div>
+        <div class="ps-title">IP 사업 확장 (OSMU)</div>
+        <p class="ps-desc">해외 수출, 영상화(드라마·영화), 굿즈 제작 등 부가 가치 창출로 IP의 수명과 가치를 극대화합니다.</p>
+        <div class="ps-tags">
+          <span class="ps-tag"># 해외수출</span>
+          <span class="ps-tag"># 드라마·영화</span>
+          <span class="ps-tag"># 굿즈</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-        <path d="M215 240 L248 245 Q230 255 215 240 Z" fill="#09090b" />
-        <ellipse cx="230" cy="245" rx="4" ry="4.5" fill="#ea580c" />
-        <circle cx="230" cy="245" r="1.5" fill="#fef08a" />
-        <polygon points="215,225 255,230 252,235 220,232" fill="#09090b" />
+<!-- ══════════════════════════════════════════
+     05 — CONTACT
+════════════════════════════════════════════ -->
+<section id="contact" class="sec sec-white">
+  <div class="big-num">05</div>
+  <div class="sec-inner" style="padding-top:110px;padding-bottom:110px">
+    <p class="sec-label">[ 05 / CONTACT ]</p>
+    <h2 class="contact-h2">함께 만들어요.</h2>
 
-        {/* 오똑한 코 & 자신만만한 입꼬리 */}
-        <path d="M198 268 L203 292 L195 296" stroke="#fba77a" strokeWidth="2" strokeLinecap="round" />
-        <path d="M188 322 Q200 324 212 316" stroke="#b91c1c" strokeWidth="2.5" strokeLinecap="round" />
-      </svg>
-    )
-  }
-];
-
-function App() {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedWebtoon, setSelectedWebtoon] = useState<Webtoon | null>(null);
-
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev + 1) % WEBTOONS.length);
-  };
-
-  const handlePrev = () => {
-    setActiveIndex((prev) => (prev - 1 + WEBTOONS.length) % WEBTOONS.length);
-  };
-
-  return (
-    <div className="min-h-screen bg-[#FCFCF9] text-stone-900 font-sans selection:bg-amber-400 selection:text-stone-950 overflow-x-hidden">
-      
-      {/* 1. GNB NAVIGATION */}
-      <header className="fixed top-0 left-0 right-0 z-50 py-4 bg-white/90 backdrop-blur-md border-b border-stone-200/80 shadow-sm transition-all">
-        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-3.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-stone-950 rounded-[9px] flex items-center justify-center font-black text-xl text-amber-400">
-                H
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-black text-xl tracking-wider text-stone-900">HEESTORY</span>
-              <span className="text-[10px] tracking-[0.25em] text-amber-600 font-bold uppercase">WEBTOON AGENCY</span>
-            </div>
-          </a>
-          
-          <div className="flex items-center gap-6">
-            <div className="text-xs text-stone-500 font-semibold tracking-widest uppercase hidden md:block">
-              PREMIUM WEBTOON IP STUDIO
-            </div>
-            <a 
-              href="#portfolio" 
-              className="px-4 py-2 rounded-full bg-stone-900 text-amber-400 text-xs font-bold hover:bg-amber-500 hover:text-stone-950 transition-colors shadow-sm"
-            >
-              라인업 보기
+    <div class="contact-grid">
+      <!-- 네이버 지도 -->
+      <div>
+        <p style="font-family:var(--mono);font-size:10px;color:var(--gray3);letter-spacing:.2em;margin-bottom:10px">— 오시는 길</p>
+        <div class="map-wrap">
+          <iframe
+            src="https://map.naver.com/v5/search/%EC%A4%91%EB%8F%99%EB%A1%9C254%EB%B2%88%EA%B8%B090"
+            title="HEESTORY 위치 — 중동로254번길 90"
+            loading="lazy"
+            allowfullscreen
+          ></iframe>
+          <div class="map-fallback" id="map-fallback">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" style="opacity:.5">
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="#FFE900"/>
+            </svg>
+            <div class="map-addr">중동로254번길 90, 6F–7F</div>
+            <div class="map-addr-sub">지도 로딩 중…</div>
+            <a href="https://map.naver.com/v5/search/%EC%A4%91%EB%8F%99%EB%A1%9C254%EB%B2%88%EA%B8%B090"
+               target="_blank" rel="noopener" class="map-link-btn">
+              네이버 지도에서 보기 →
             </a>
           </div>
         </div>
-      </header>
+        <p class="map-label">한국 · 중동로254번길 90, 6F–7F</p>
+      </div>
 
-
-      {/* 2. HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center justify-center pt-24 pb-16 overflow-hidden">
-        
-        {/* 화이트 & 웜 크림 베이스 배경 */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF8] via-[#FAF6EE] to-[#FCFCF9] z-0" />
-        
-        {/* 은은한 엠비언트 백라이트 */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-amber-200/40 via-orange-100/30 to-stone-100/20 blur-[130px] rounded-full pointer-events-none" />
-
-        {/* 🌟 다이내믹 만화풍 배틀 일러스트 (용사 vs 거대 드래곤 브레스 격돌) */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10 opacity-90">
-          <svg viewBox="0 0 1440 850" fill="none" className="w-full h-auto max-h-[90vh] object-cover">
-            <defs>
-              {/* 드래곤 화염 브레스 그라데이션 */}
-              <radialGradient id="dragonBreath" cx="0.2" cy="0.4" r="0.8">
-                <stop offset="0%" stopColor="#fef08a" />
-                <stop offset="30%" stopColor="#f97316" />
-                <stop offset="70%" stopColor="#ef4444" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#7f1d1d" stopOpacity="0" />
-              </radialGradient>
-
-              {/* 용사의 검기 오라 그라데이션 */}
-              <linearGradient id="heroSwordAura" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0%" stopColor="#38bdf8" />
-                <stop offset="50%" stopColor="#818cf8" />
-                <stop offset="80%" stopColor="#fbbf24" />
-                <stop offset="100%" stopColor="#ffffff" />
-              </linearGradient>
-
-              <linearGradient id="smokeGround" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.15" />
-                <stop offset="100%" stopColor="#FCFCF9" stopOpacity="1" />
-              </linearGradient>
-            </defs>
-
-            {/* 배경 만화 집중선 (Speed Lines) */}
-            <g stroke="#d97706" strokeWidth="1" opacity="0.15">
-              <line x1="0" y1="200" x2="680" y2="400" strokeDasharray="15 10" />
-              <line x1="0" y1="350" x2="680" y2="420" strokeDasharray="20 15" />
-              <line x1="1440" y1="150" x2="800" y2="380" strokeDasharray="25 15" />
-              <line x1="1440" y1="320" x2="820" y2="420" strokeDasharray="15 10" />
-            </g>
-
-            {/* [우측] 거대 화염룡 (Dragon) 캐릭터 컷 */}
-            <g transform="translate(780, 100)">
-              {/* 드래곤 브레스 폭풍 */}
-              <path d="M-40 280 Q-260 270 -420 310 Q-240 370 -20 340 Z" fill="url(#dragonBreath)" opacity="0.85" />
-              
-              {/* 드래곤 머리 & 거대한 턱 & 뿔 */}
-              <path d="M280 20 C220 30 180 80 120 140 C70 190 0 230 -60 260 C-30 280 20 285 80 265 C40 300 -10 320 -50 330 C0 360 80 340 140 310 C200 280 240 230 300 210 C360 260 460 300 520 320 L550 150 C480 110 400 40 280 20 Z" 
-                    fill="#18181b" stroke="#ca8a04" strokeWidth="3" />
-              
-              {/* 웅장한 황금 뿔 2개 */}
-              <path d="M200 70 Q280 -40 380 -50 Q310 40 250 100 Z" fill="#eab308" stroke="#fef08a" strokeWidth="2" />
-              <path d="M160 110 Q210 20 290 10 Q240 70 200 130 Z" fill="#ca8a04" />
-
-              {/* 불타오르는 황금-적색 드래곤 눈 */}
-              <ellipse cx="60" cy="220" rx="14" ry="8" fill="#fef08a" />
-              <ellipse cx="60" cy="220" rx="4" ry="8" fill="#ef4444" />
-
-              {/* 날카로운 드래곤 이빨들 */}
-              <polygon points="-20,270 0,290 15,272" fill="#ffffff" />
-              <polygon points="30,268 45,288 60,265" fill="#ffffff" />
-              <polygon points="-10,325 5,305 20,322" fill="#ffffff" />
-              <polygon points="35,320 50,302 65,318" fill="#ffffff" />
-
-              {/* 비늘 & 디테일 하이라이트 */}
-              <path d="M180 170 Q220 160 260 180 M150 210 Q190 200 230 220" stroke="#ca8a04" strokeWidth="2" fill="none" />
-            </g>
-
-            {/* [좌측] 검을 휘두르며 도약하는 용사 (Warrior) 캐릭터 */}
-            <g transform="translate(240, 240)">
-              {/* 용사의 휘날리는 푸른/붉은 망토 */}
-              <path d="M-60 240 Q-150 180 -180 290 Q-90 320 -30 290 Z" fill="#be123c" opacity="0.9" />
-              <path d="M-40 250 Q-110 320 -150 420 Q-60 380 0 320 Z" fill="#9f1239" />
-
-              {/* 용사 몸체 & 황금 플레이트 갑옷 */}
-              <path d="M-30 220 L20 180 L70 240 L30 320 L-20 300 Z" fill="#1e293b" stroke="#eab308" strokeWidth="3" />
-              {/* 어깨 견갑 & 팔 역동적 포즈 */}
-              <circle cx="20" cy="180" r="22" fill="#eab308" stroke="#fef08a" strokeWidth="2" />
-              <path d="M25 175 L120 100 L140 120 L55 200 Z" fill="#334155" />
-
-              {/* 용사 얼굴 & 흩날리는 흑발 */}
-              <polygon points="0,150 25,185 50,155 35,125 10,125" fill="#ffedd5" />
-              <path d="M-15 135 Q10 75 55 125 Q70 165 40 175 Q5 170 -15 135 Z" fill="#0f172a" />
-              <path d="M-35 150 L10 130 L-20 170 Z" fill="#1e293b" />
-              {/* 결연한 눈빛 */}
-              <circle cx="32" cy="150" r="3" fill="#38bdf8" />
-
-              {/* 솟구치는 거대한 마검 & 검기 (브레스와 정면 충돌) */}
-              {/* 대검 본체 */}
-              <path d="M125 95 L260 -20 L275 -5 L140 110 Z" fill="#f8fafc" stroke="#64748b" strokeWidth="2" />
-              {/* 검신에 깃든 폭발적인 삼색 검기 오라 */}
-              <path d="M110 120 L420 -120 L400 -70 L160 140 Z" fill="url(#heroSwordAura)" opacity="0.8" />
-              <line x1="120" y1="110" x2="480" y2="-150" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
-            </g>
-
-            {/* 중앙 격돌 지점 스파크 파티클 */}
-            <g transform="translate(620, 390)">
-              <circle cx="0" cy="0" r="60" fill="#fef08a" opacity="0.6" />
-              <circle cx="0" cy="0" r="25" fill="#ffffff" />
-              <line x1="-80" y1="-80" x2="80" y2="80" stroke="#facc15" strokeWidth="4" />
-              <line x1="-80" y1="80" x2="80" y2="-80" stroke="#38bdf8" strokeWidth="4" />
-              <line x1="0" y1="-100" x2="0" y2="100" stroke="#f97316" strokeWidth="3" />
-            </g>
-
-            {/* 하단 안개/전장 그라운드 */}
-            <rect y="680" width="1440" height="170" fill="url(#smokeGround)" />
-          </svg>
+      <!-- 연락처 정보 -->
+      <div class="contact-info">
+        <div>
+          <p class="ci-label">— EMAIL</p>
+          <a href="mailto:heestory@gmail.com" class="ci-email">heestory@gmail.com</a>
         </div>
-
-        {/* Hero 메인 카피 */}
-        <div className="relative z-20 max-w-5xl mx-auto px-6 text-center">
-          
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 border border-amber-300 shadow-md mb-6 backdrop-blur-sm">
-            <Sparkles className="w-4 h-4 text-amber-600" />
-            <span className="text-xs font-black tracking-widest text-amber-800 uppercase">
-              HEESTORY ORIGINAL IP STUDIO
-            </span>
-          </div>
-
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-stone-900 mb-6 leading-[1.18] drop-shadow-sm">
-            당신의 이야기는<br />
-            <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
-              우리의 세계가 된다
-            </span>
-          </h1>
-
-          <p className="max-w-xl mx-auto text-lg text-stone-700 font-semibold leading-relaxed drop-shadow-sm">
-            살아 숨 쉬는 캐릭터와 압도적인 스케일의 스토리텔링,<br />
-            전 세계 독자들을 열광시키는 오리지널 웹툰을 만듭니다.
-          </p>
-
+        <div>
+          <p class="ci-label">— STUDIO</p>
+          <p class="ci-studio">HEESTORY Agency</p>
+          <p class="ci-studio-sub">중동로254번길 90, 6F–7F</p>
         </div>
-
-      </section>
-
-
-      {/* 🌟 3. WHAT WE DO SECTION (DISCOVER / DEVELOP / EXPAND) */}
-      <section className="py-24 bg-white relative overflow-hidden border-t border-stone-200/70">
-        
-        {/* 배경 골드 워터마크 & 라이트 */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-amber-100/40 blur-[120px] pointer-events-none rounded-full" />
-        
-        <div className="max-w-7xl mx-auto px-8 relative z-10">
-          
-          {/* 섹션 헤더 */}
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-black tracking-widest uppercase mb-3">
-              WHAT WE DO
-            </div>
-            <h2 className="text-3xl md:text-4xl font-black text-stone-900 tracking-tight">
-              스토리가 글로벌 IP로 완성되는 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600">3단계 여정</span>
-            </h2>
-            <p className="text-stone-500 text-sm md:text-base mt-3 font-medium">
-              독창적인 원작 발굴부터 고퀄리티 스튜디오 제작, 글로벌 미디어믹스 확장까지 체계적으로 연결합니다.
-            </p>
-          </div>
-
-          {/* 3대 핵심 기둥 그리드 (DISCOVER / DEVELOP / EXPAND) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            
-            {/* 연결 플로우 화살표 라인 (PC 웹) */}
-            <div className="hidden md:block absolute top-1/2 left-1/4 right-1/4 h-[2px] bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300 -translate-y-12 z-0 stroke-dashed" />
-
-            {/* STEP 1: DISCOVER */}
-            <div className="group relative bg-[#FCFCF9] rounded-3xl p-8 border border-stone-200/90 shadow-lg shadow-stone-200/40 hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between">
-              
-              <div>
-                {/* 상단 스텝 뱃지 & 아이콘 */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
-                    <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-stone-900">
-                      <svg className="w-7 h-7 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        <path d="M11 8v6"></path>
-                        <path d="M8 11h6"></path>
-                      </svg>
-                    </div>
-                  </div>
-                  <span className="text-xs font-black tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                    STEP 01
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-black text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">
-                  DISCOVER
-                </h3>
-                <p className="text-xs font-bold text-amber-700 tracking-wider mb-4 uppercase">
-                  원석 IP 발굴 & 기획
-                </p>
-
-                <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  웹소설, 오리지널 시놉시스, 작가 고유의 스토리 중 글로벌 잠재력을 지닌 독창적 원석 IP를 정밀하게 발굴하고 시장성 있는 콘셉트로 정립합니다.
-                </p>
-              </div>
-
-              {/* 핵심 키워드 태그 */}
-              <div className="pt-4 border-t border-stone-200/70 flex flex-wrap gap-1.5">
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#원천스토리</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#소설원작IP</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#트렌드분석</span>
-              </div>
-            </div>
-
-            {/* STEP 2: DEVELOP */}
-            <div className="group relative bg-[#FCFCF9] rounded-3xl p-8 border border-stone-200/90 shadow-lg shadow-stone-200/40 hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between md:-translate-y-2">
-              
-              <div>
-                {/* 상단 스텝 뱃지 & 아이콘 */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-500 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
-                    <div className="w-full h-full bg-stone-950 rounded-[14px] flex items-center justify-center text-amber-400">
-                      <svg className="w-7 h-7 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
-                        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
-                        <path d="M2 2l7.586 7.586"></path>
-                        <circle cx="11" cy="11" r="2"></circle>
-                      </svg>
-                    </div>
-                  </div>
-                  <span className="text-xs font-black tracking-widest text-white bg-stone-900 px-3 py-1 rounded-full border border-amber-500/40">
-                    STEP 02
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-black text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">
-                  DEVELOP
-                </h3>
-                <p className="text-xs font-bold text-amber-700 tracking-wider mb-4 uppercase">
-                  스튜디오 전문 제작 파이프라인
-                </p>
-
-                <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  각색, 콘티, 선화, 채색, 3D 배경, 후보정에 이르는 분업화된 전문 스튜디오 시스템으로 매화 극장판 수준의 고퀄리티 작화를 완성합니다.
-                </p>
-              </div>
-
-              {/* 핵심 키워드 태그 */}
-              <div className="pt-4 border-t border-stone-200/70 flex flex-wrap gap-1.5">
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#작화스튜디오</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#콘티각색</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#3D배경보정</span>
-              </div>
-            </div>
-
-            {/* STEP 3: EXPAND */}
-            <div className="group relative bg-[#FCFCF9] rounded-3xl p-8 border border-stone-200/90 shadow-lg shadow-stone-200/40 hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between">
-              
-              <div>
-                {/* 상단 스텝 뱃지 & 아이콘 */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
-                    <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-stone-900">
-                      <svg className="w-7 h-7 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                      </svg>
-                    </div>
-                  </div>
-                  <span className="text-xs font-black tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                    STEP 03
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-black text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">
-                  EXPAND
-                </h3>
-                <p className="text-xs font-bold text-amber-700 tracking-wider mb-4 uppercase">
-                  글로벌 연재 & 미디어믹스 확장
-                </p>
-
-                <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  네이버, 카카오, 라인 등 국내외 주요 플랫폼 동시 런칭 및 영상화(드라마/영화), 애니메이션, 게임, 굿즈 등 원소스 멀티유즈(OSMU)를 실현합니다.
-                </p>
-              </div>
-
-              {/* 핵심 키워드 태그 */}
-              <div className="pt-4 border-t border-stone-200/70 flex flex-wrap gap-1.5">
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#글로벌플랫폼</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#드라마화</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#게임·굿즈OSMU</span>
-              </div>
-            </div>
-
-          </div>
-
+        <div>
+          <p class="ci-label">— 작가 지원 &amp; 파트너십</p>
+          <a href="mailto:heestory@gmail.com" class="btn-primary">문의 보내기 →</a>
         </div>
-      </section>
-
-
-      {/* 4. WEBTOON PORTFOLIO CAROUSEL (캐릭터 얼굴 중심 3D 원형 링 캐러셀) */}
-      <section id="portfolio" className="py-24 bg-[#FAF7F0] border-y border-stone-200/80 relative overflow-hidden">
-        
-        {/* 골드 엠비언트 백라이트 */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[450px] bg-gradient-to-r from-amber-200/30 via-yellow-200/20 to-stone-200/30 blur-[130px] pointer-events-none rounded-full" />
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-amber-600 font-extrabold text-xs tracking-widest uppercase">FEATURED LINEUP</span>
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mt-2">
-              히스토리 대표 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-600">웹툰 라인업</span>
-            </h2>
-          </div>
-
-          {/* 3D 원형 배치 캐러셀 */}
-          <div className="relative h-[480px] flex items-center justify-center perspective-[1200px] select-none">
-            
-            {WEBTOONS.map((item, index) => {
-              const total = WEBTOONS.length;
-              let offset = index - activeIndex;
-
-              if (offset > total / 2) offset -= total;
-              if (offset < -total / 2) offset += total;
-
-              const absOffset = Math.abs(offset);
-              const isActive = offset === 0;
-
-              const translateX = offset * 230; 
-              const translateZ = -absOffset * 180; 
-              const rotateY = offset * -16; 
-              const opacity = absOffset > 2 ? 0 : 1 - absOffset * 0.25;
-              const zIndex = 20 - absOffset;
-
-              return (
-                <div
-                  key={item.id}
-                  onClick={() => {
-                    if (isActive) setSelectedWebtoon(item);
-                    else setActiveIndex(index);
-                  }}
-                  className={`absolute w-[280px] h-[420px] rounded-2xl cursor-pointer transition-all duration-700 ease-out shadow-2xl border overflow-hidden ${
-                    isActive 
-                      ? 'border-amber-400 shadow-amber-500/30 ring-4 ring-amber-400/40 scale-105' 
-                      : 'border-stone-200 hover:border-amber-300 opacity-80 hover:opacity-100'
-                  }`}
-                  style={{
-                    transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`,
-                    opacity: opacity,
-                    zIndex: zIndex,
-                    pointerEvents: opacity === 0 ? 'none' : 'auto'
-                  }}
-                >
-                  <div className="w-full h-full relative flex flex-col justify-between p-6 bg-stone-950">
-                    
-                    {/* 상단 뱃지 */}
-                    <div className="relative z-10 flex items-center justify-between">
-                      <span className="px-2.5 py-1 rounded-md text-[11px] font-extrabold bg-black/75 backdrop-blur-md text-amber-300 border border-amber-400/40 shadow-sm">
-                        {item.badge}
-                      </span>
-                      <span className="text-[11px] font-bold text-white bg-amber-600 px-2 py-0.5 rounded-md shadow-sm">
-                        {item.genreLabel}
-                      </span>
-                    </div>
-
-                    {/* 웹툰 캐릭터 커버 일러스트 */}
-                    <div className="absolute inset-0">
-                      {item.coverArt}
-                    </div>
-
-                    {/* 하단 타이틀 & 평점 */}
-                    <div className="relative z-10 bg-gradient-to-t from-black via-black/85 to-transparent -mx-6 -mb-6 p-5 pt-14">
-                      <div className="flex items-center justify-between text-xs mb-1.5">
-                        <span className="text-stone-300 text-[11px] font-medium">{item.author}</span>
-                        <div className="flex items-center gap-1 text-amber-400 font-black text-[12px]">
-                          <Star className="w-3.5 h-3.5 fill-amber-400" />
-                          <span>{item.rating}</span>
-                        </div>
-                      </div>
-                      
-                      <h3 className="text-lg font-black text-white line-clamp-1 flex items-center justify-between">
-                        <span>{item.title}</span>
-                        {isActive && <ArrowUpRight className="w-4 h-4 text-amber-400 flex-shrink-0 ml-1" />}
-                      </h3>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-
-          </div>
-
-          {/* 캐러셀 인디케이터 및 컨트롤 */}
-          <div className="flex items-center justify-center gap-6 mt-8">
-            <button
-              onClick={handlePrev}
-              className="p-3 rounded-full bg-white border border-stone-300 text-stone-700 hover:bg-amber-500 hover:text-stone-950 hover:border-amber-500 transition-colors shadow-sm"
-              aria-label="이전 작품"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-2">
-              {WEBTOONS.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveIndex(idx)}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    activeIndex === idx ? 'w-8 bg-amber-500' : 'w-2.5 bg-stone-300'
-                  }`}
-                />
-              ))}
-            </div>
-
-            <button
-              onClick={handleNext}
-              className="p-3 rounded-full bg-white border border-stone-300 text-stone-700 hover:bg-amber-500 hover:text-stone-950 hover:border-amber-500 transition-colors shadow-sm"
-              aria-label="다음 작품"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </div>
-
-        </div>
-      </section>
-
-
-      {/* 4. FOOTER */}
-      <footer className="bg-white text-stone-500 border-t border-stone-200 py-10">
-        <div className="max-w-6xl mx-auto px-8 flex items-center justify-between text-xs">
-          
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2.5 mb-2">
-              <span className="font-black text-base tracking-wider text-stone-900">HEESTORY</span>
-              <span className="text-[11px] text-amber-600 font-bold">| (주)히스토리에이전시</span>
-            </div>
-            <p className="text-stone-600">
-              대표이사: 홍길동 | 사업자등록번호: 124-87-99201 | 문의: contact@heestory.com
-            </p>
-            <p className="text-stone-400">
-              주소: 서울특별시 강남구 테헤란로 427 히스토리 타워 12층
-            </p>
-          </div>
-
-          <div className="text-stone-400 text-right">
-            <p className="font-semibold">© 2026 HEESTORY AGENCY.</p>
-            <p className="text-[11px]">All Rights Reserved.</p>
-          </div>
-
-        </div>
-      </footer>
-
-
-      {/* 작품 상세 정보 모달 */}
-      {selectedWebtoon && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white border border-stone-200 rounded-2xl max-w-xl w-full p-7 relative overflow-hidden shadow-2xl">
-            <button 
-              onClick={() => setSelectedWebtoon(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-stone-100 text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex gap-6 items-start">
-              <div className="w-40 h-56 rounded-xl overflow-hidden flex-shrink-0 relative border border-stone-200 shadow-md">
-                {selectedWebtoon.coverArt}
-              </div>
-
-              <div className="flex-1 text-left">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200">
-                    {selectedWebtoon.genreLabel}
-                  </span>
-                  <span className="text-xs font-bold text-stone-700 bg-stone-100 px-2 py-0.5 rounded">
-                    {selectedWebtoon.badge}
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-black text-stone-900 mb-1">{selectedWebtoon.title}</h3>
-                <p className="text-xs font-medium text-stone-500 mb-3">{selectedWebtoon.author}</p>
-
-                <p className="text-stone-600 text-xs leading-relaxed mb-5">
-                  {selectedWebtoon.description}
-                </p>
-
-                <div className="flex items-center justify-between py-2.5 px-4 rounded-xl bg-amber-50/60 border border-amber-100 text-xs text-stone-700 mb-5">
-                  <span className="font-semibold">누적 조회수 <strong className="text-stone-900">{selectedWebtoon.views}</strong></span>
-                  <span className="text-amber-600 font-bold flex items-center gap-1">
-                    <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                    {selectedWebtoon.rating}
-                  </span>
-                </div>
-
-                <button 
-                  onClick={() => setSelectedWebtoon(null)}
-                  className="w-full py-3 rounded-xl bg-stone-900 text-amber-400 font-bold text-xs hover:bg-amber-500 hover:text-stone-950 transition-colors shadow-sm"
-                >
-                  닫기
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
+      </div>
     </div>
-  );
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     FOOTER
+════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-brand">HEESTORY</div>
+      <div class="footer-copy">© 2024 HEESTORY WEBTOON AGENCY. ALL RIGHTS RESERVED.</div>
+    </div>
+    <nav class="footer-nav">
+      <button class="fn" onclick="goTo('portfolio')">01 포트폴리오</button>
+      <button class="fn" onclick="goTo('whatwedo')">02 WHAT WE DO</button>
+      <button class="fn" onclick="goTo('vision')">03 비전</button>
+      <button class="fn" onclick="goTo('process')">04 프로세스</button>
+      <button class="fn" onclick="goTo('contact')">05 연락처</button>
+    </nav>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════
+     MODAL
+════════════════════════════════════════════ -->
+<div id="modal">
+  <div class="modal-box">
+    <button id="modal-close">&#x2715;</button>
+    <div id="modal-cover"></div>
+    <div class="modal-info">
+      <p class="mi-genre" id="mi-genre"></p>
+      <h3 class="mi-title" id="mi-title"></h3>
+      <p class="mi-syn"   id="mi-syn"></p>
+      <div class="mi-meta">
+        <span class="mi-badge" id="mi-badge"></span>
+        <span class="mi-views" id="mi-views"></span>
+      </div>
+      <button class="mi-close-btn" onclick="closeModal()">닫기</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+════════════════════════════════════════════ -->
+<script>
+/* ── scroll ── */
+function goTo(id){
+  var el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth'});
 }
 
-    const root = ReactDOM.createRoot(document.getElementById("root"));
-    root.render(<App />);
-  </script>
+/* ── nav active ── */
+var secIds=['portfolio','whatwedo','vision','process','contact'];
+var nns=document.querySelectorAll('.nn');
+var io=new IntersectionObserver(function(entries){
+  entries.forEach(function(e){
+    if(e.isIntersecting){
+      var idx=secIds.indexOf(e.target.id);
+      nns.forEach(function(b,i){ b.classList.toggle('active',i===idx); });
+    }
+  });
+},{threshold:0.45});
+secIds.forEach(function(id){ var el=document.getElementById(id); if(el) io.observe(el); });
+
+/* ── hide map fallback when iframe loads ── */
+var iframe=document.querySelector('.map-wrap iframe');
+if(iframe){
+  iframe.addEventListener('load',function(){
+    var fb=document.getElementById('map-fallback');
+    if(fb) fb.style.display='none';
+  });
+}
+
+/* ── webtoon data ── */
+var W=[
+  {
+    id:1,title:"용의 눈을 가진 검사",
+    genre:"판타지 / 액션",author:"글 스토리크루 · 그림 아티잔",
+    synopsis:"봉인된 고대 멸악룡의 붉은 안구를 이식받은 검사 이안. 대륙을 집어삼키려는 마왕군에 맞서 각성한 마검의 칼날을 겨눈다!",
+    views:"누적 1.2억회",badge:"글로벌 1위",bg:"#1e1b4b",
+    svg:'<svg viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#1e1b4b"/><stop offset="100%" stop-color="#020617"/></linearGradient><radialGradient id="e1" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="#ef4444" stop-opacity=".9"/><stop offset="100%" stop-color="#7f1d1d" stop-opacity="0"/></radialGradient></defs><rect width="200" height="300" fill="url(#g1)"/><path d="M-25 200L225 75 200 50-50 175Z" fill="#38bdf8" opacity=".3"/><polygon points="67,110 75,150 100,180 125,150 133,110 100,95" fill="#ffedd5"/><path d="M60,115Q80,65 100,65Q120,65 140,115Q145,145 140,160L132,120Q125,85 100,85Q75,85 68,120L60,160Z" fill="#0f172a"/><path d="M77,123Q87,118 93,125Q86,128 77,123Z" fill="#0f172a"/><circle cx="86" cy="123" r="2" fill="#38bdf8"/><circle cx="86" cy="121" r=".8" fill="#fff"/><circle cx="114" cy="123" r="9" fill="url(#e1)"/><ellipse cx="114" cy="123" rx="1.5" ry="3" fill="#ef4444"/><path d="M99,138L101,148 98,149" stroke="#fba77a" stroke-width="1" stroke-linecap="round" fill="none"/><path d="M94,161Q100,163 106,161" stroke="#e17a55" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M65,210L100,235 135,210 145,300 55,300Z" fill="#1e293b" stroke="#ca8a04" stroke-width="1.5"/></svg>'
+  },
+  {
+    id:2,title:"천재 연금술사의 만능 샵",
+    genre:"현대 판타지 / 힐링",author:"글 히스토리 · 그림 앨리스",
+    synopsis:"차원 게이트 앞 골든 포션 전문 샵의 천재 안경 미소녀 연금술사! 전 세계 SS급 헌터들이 그녀의 포션을 구하기 위해 줄을 선다.",
+    views:"누적 8,500만회",badge:"드라마화 확정",bg:"#064e3b",
+    svg:'<svg viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="g2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#064e3b"/><stop offset="100%" stop-color="#022c22"/></linearGradient><radialGradient id="r2" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="#34d399" stop-opacity=".7"/><stop offset="100%" stop-color="#064e3b" stop-opacity="0"/></radialGradient></defs><rect width="200" height="300" fill="url(#g2)"/><circle cx="150" cy="90" r="60" fill="url(#r2)"/><polygon points="72,115 78,150 100,178 122,150 128,115 100,102" fill="#fff7ed"/><path d="M62,105Q70,60 100,60Q130,60 138,105Q145,140 135,175L125,170Q130,140 128,110Q120,80 100,80Q80,80 72,110Q70,140 75,170L65,175Z" fill="#059669"/><path d="M70,85Q100,95 130,85L128,115Q100,122 72,115Z" fill="#10b981"/><circle cx="85" cy="128" r="9" stroke="#fbbf24" stroke-width="2" fill="none"/><circle cx="115" cy="128" r="9" stroke="#fbbf24" stroke-width="2" fill="none"/><line x1="94" y1="128" x2="106" y2="128" stroke="#fbbf24" stroke-width="2"/><circle cx="85" cy="128" r="4" fill="#047857"/><circle cx="84" cy="126" r="1.5" fill="#fff"/><circle cx="115" cy="128" r="4" fill="#047857"/><circle cx="114" cy="126" r="1.5" fill="#fff"/><ellipse cx="75" cy="143" rx="5" ry="3" fill="#f43f5e" opacity=".35"/><ellipse cx="125" cy="143" rx="5" ry="3" fill="#f43f5e" opacity=".35"/><path d="M96,158Q100,163 104,158" stroke="#f43f5e" stroke-width="1.5" stroke-linecap="round" fill="none"/></svg>'
+  },
+  {
+    id:3,title:"내 연애는 로딩 중",
+    genre:"로맨스 코미디",author:"글/그림 핑크문 Studio",
+    synopsis:"게임 속 랭킹 1위 길드마스터와 까칠하고 잘생긴 본부장님의 앙큼살벌 사내 밀당 로맨스!",
+    views:"누적 6,400만회",badge:"독점 연재",bg:"#4c0519",
+    svg:'<svg viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="g3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#4c0519"/><stop offset="100%" stop-color="#0c070e"/></linearGradient><radialGradient id="r3" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="#fb7185" stop-opacity=".5"/><stop offset="100%" stop-color="#881337" stop-opacity="0"/></radialGradient></defs><rect width="200" height="300" fill="url(#g3)"/><circle cx="100" cy="100" r="90" fill="url(#r3)"/><polygon points="70,112 78,148 100,178 122,148 130,112 100,100" fill="#fff7ed"/><path d="M62,110Q73,62 100,62Q127,62 138,110L132,130Q127,80 100,80Q73,80 68,130Z" fill="#1c1917"/><ellipse cx="85" cy="126" rx="3" ry="4" fill="#4c0519"/><circle cx="85.5" cy="125" r="1" fill="#fff"/><ellipse cx="115" cy="126" rx="3" ry="4" fill="#4c0519"/><circle cx="114.5" cy="125" r="1" fill="#fff"/><path d="M95,161Q100,162 106,159" stroke="#e11d48" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M82,185L100,235 118,185 122,300 78,300Z" fill="#0f172a"/><polygon points="87,185 100,235 113,185 108,240 92,240" fill="#fff"/><polygon points="98,193 102,193 104,260 96,260" fill="#e11d48"/><path d="M145,70Q152,60 160,70Q168,80 145,98Q122,80 130,70Q137,60 145,70Z" fill="#f43f5e" opacity=".7"/></svg>'
+  },
+  {
+    id:4,title:"그림자 제국의 흑막 영애",
+    genre:"로맨스 판타지",author:"글 벨라 · 그림 로판 랩",
+    synopsis:"시한부 악녀로 빙의한 은발의 대공 영애 엘레나. 우아하고 치명적인 지략으로 황실 전체를 손바닥 위에 올려놓는다.",
+    views:"누적 9,800만회",badge:"글로벌 톱5",bg:"#2e1065",
+    svg:'<svg viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="g4" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#2e1065"/><stop offset="100%" stop-color="#090514"/></linearGradient><radialGradient id="r4" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="#c084fc" stop-opacity=".6"/><stop offset="100%" stop-color="#2e1065" stop-opacity="0"/></radialGradient></defs><rect width="200" height="300" fill="url(#g4)"/><circle cx="100" cy="95" r="95" fill="url(#r4)"/><polygon points="72,113 78,148 100,175 122,148 128,113 100,100" fill="#fff1f2"/><path d="M55,105Q70,50 100,50Q130,50 145,105Q157,160 143,225L127,215Q138,160 130,110Q120,72 100,72Q80,72 70,110Q62,160 73,215L57,225Q43,160 55,105Z" fill="#e2e8f0"/><polygon points="80,70 90,55 100,72 110,55 120,70" fill="#facc15" stroke="#fef08a" stroke-width="1"/><circle cx="100" cy="68" r="2.5" fill="#dc2626"/><ellipse cx="85" cy="121" rx="3" ry="4" fill="#9333ea"/><circle cx="84" cy="120" r="1" fill="#fff"/><ellipse cx="115" cy="121" rx="3" ry="4" fill="#9333ea"/><circle cx="114" cy="120" r="1" fill="#fff"/><path d="M95,159Q100,163 105,159" stroke="#be123c" stroke-width="2" stroke-linecap="round" fill="none"/><path d="M82,185L82,220 118,220 118,185Z" fill="#fdf2f8"/><path d="M65,215Q100,240 135,215L145,300 55,300Z" fill="#3b0764" stroke="#eab308" stroke-width="1.5"/><ellipse cx="100" cy="212" rx="4" ry="6" fill="#dc2626" stroke="#fef08a" stroke-width="1"/></svg>'
+  },
+  {
+    id:5,title:"무림 레벨업 센터",
+    genre:"무협 / 현대 액션",author:"글 강호 · 그림 무극",
+    synopsis:"화산파의 붉은 매화검존이 현대 강남 헌터 시험장에 강림했다. 압도적인 무공 수련으로 현대 헌터 랭킹 1위를 탈환한다!",
+    views:"누적 1.5억회",badge:"게임화 확정",bg:"#450a0a",
+    svg:'<svg viewBox="0 0 200 300" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%"><defs><linearGradient id="g5" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#450a0a"/><stop offset="100%" stop-color="#09090b"/></linearGradient><radialGradient id="r5" cx=".5" cy=".5" r=".5"><stop offset="0%" stop-color="#f97316" stop-opacity=".7"/><stop offset="60%" stop-color="#ef4444" stop-opacity=".3"/><stop offset="100%" stop-color="#000" stop-opacity="0"/></radialGradient></defs><rect width="200" height="300" fill="url(#g5)"/><circle cx="100" cy="105" r="90" fill="url(#r5)"/><ellipse cx="60" cy="80" rx="7" ry="4" fill="#f43f5e" transform="rotate(-30 60 80)"/><ellipse cx="140" cy="70" rx="8" ry="4" fill="#fb7185" transform="rotate(40 140 70)"/><polygon points="67,112 75,148 100,177 125,148 133,112 100,98" fill="#ffedd5"/><path d="M57,115Q70,57 100,57Q130,57 143,115Q152,170 140,215L127,205Q135,155 130,105Q120,75 100,75Q80,75 70,105Q65,155 73,205L60,215Z" fill="#09090b"/><path d="M97,103Q100,95 103,103Q100,107 97,103Z" fill="#ef4444"/><ellipse cx="85" cy="122" rx="3" ry="3.5" fill="#ea580c"/><circle cx="85" cy="122" r="1.2" fill="#fef08a"/><polygon points="72,115 93,112 90,116 74,117" fill="#09090b"/><ellipse cx="115" cy="122" rx="3" ry="3.5" fill="#ea580c"/><circle cx="115" cy="122" r="1.2" fill="#fef08a"/><polygon points="107,112 128,115 126,117 110,116" fill="#09090b"/><path d="M94,161Q100,162 106,158" stroke="#b91c1c" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M70,215L100,238 130,215 140,300 60,300Z" fill="#18181b" stroke="#ef4444" stroke-width="1.5"/></svg>'
+  }
+];
+
+/* ── carousel ── */
+var ai=0;
+var stage=document.getElementById('carousel-stage');
+var dotsEl=document.getElementById('dots');
+
+function renderCarousel(){
+  stage.innerHTML='';dotsEl.innerHTML='';
+  var total=W.length;
+  W.forEach(function(item,index){
+    var off=index-ai;
+    if(off>total/2) off-=total;
+    if(off<-total/2) off+=total;
+    var abs=Math.abs(off);
+    var isAct=off===0;
+    var tx=off*220, tz=-abs*160, ry=off*-18;
+    var op=abs>2?0:1-abs*0.28;
+    var zi=20-abs;
+
+    var card=document.createElement('div');
+    card.className='card';
+    card.style.cssText='transform:translateX('+tx+'px) translateZ('+tz+'px) rotateY('+ry+'deg);'
+      +'opacity:'+op+';z-index:'+zi+';pointer-events:'+(op===0?'none':'auto')+';'
+      +'border:'+(isAct?'2px solid #FFE900':'1px solid #444')+';'
+      +'box-shadow:'+(isAct?'0 0 40px rgba(255,233,0,.2)':'0 8px 30px rgba(0,0,0,.4)')+';';
+    card.innerHTML=
+      '<div style="width:100%;height:100%;background:'+item.bg+';position:relative;">'
+      +'<div style="position:absolute;inset:0;">'+item.svg+'</div>'
+      +'<div style="position:absolute;top:12px;left:12px;right:12px;display:flex;justify-content:space-between;z-index:10;">'
+      +'<span style="background:rgba(0,0,0,.75);color:#FFE900;font-size:10px;font-weight:900;padding:3px 8px;font-family:Courier New,monospace;">'+item.badge+'</span>'
+      +'<span style="background:#FFE900;color:#111;font-size:9px;font-weight:900;padding:3px 8px;font-family:Courier New,monospace;">'+item.genre+'</span>'
+      +'</div>'
+      +'<div style="position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,#000 60%,transparent);padding:50px 16px 16px;z-index:10;">'
+      +'<p style="color:#888;font-size:10px;font-family:Courier New,monospace;margin-bottom:4px;">'+item.author+'</p>'
+      +'<h3 style="color:#fff;font-weight:900;font-size:15px;line-height:1.3;">'+item.title+'</h3>'
+      +'<p style="color:rgba(255,255,255,.65);font-size:11px;line-height:1.5;margin-top:6px;">'+item.synopsis.slice(0,40)+'&#8230;</p>'
+      +(isAct?'<p style="color:#FFE900;font-size:10px;font-family:Courier New,monospace;margin-top:8px;letter-spacing:.1em;">TAP TO READ MORE &#8594;</p>':'')
+      +'</div>'
+      +'</div>';
+    card.addEventListener('click',function(){
+      if(isAct) openModal(item);
+      else{ ai=index; renderCarousel(); }
+    });
+    stage.appendChild(card);
+
+    var dot=document.createElement('button');
+    dot.className='dot';
+    dot.style.width=(ai===index?'28px':'8px');
+    dot.style.background=(ai===index?'#FFE900':'#444');
+    dot.addEventListener('click',function(){ ai=index; renderCarousel(); });
+    dotsEl.appendChild(dot);
+  });
+}
+document.getElementById('btn-prev').addEventListener('click',function(){ai=(ai-1+W.length)%W.length;renderCarousel();});
+document.getElementById('btn-next').addEventListener('click',function(){ai=(ai+1)%W.length;renderCarousel();});
+window.addEventListener('keydown',function(e){
+  if(e.key==='ArrowLeft'){ai=(ai-1+W.length)%W.length;renderCarousel();}
+  if(e.key==='ArrowRight'){ai=(ai+1)%W.length;renderCarousel();}
+  if(e.key==='Escape') closeModal();
+});
+
+/* ── modal ── */
+function openModal(item){
+  document.getElementById('modal-cover').innerHTML='<div style="width:160px;height:220px;background:'+item.bg+';">'+item.svg+'</div>';
+  document.getElementById('mi-genre').textContent=item.genre;
+  document.getElementById('mi-title').textContent=item.title;
+  document.getElementById('mi-syn').textContent=item.synopsis;
+  document.getElementById('mi-badge').textContent=item.badge;
+  document.getElementById('mi-views').textContent=item.views;
+  document.getElementById('modal').classList.add('open');
+}
+function closeModal(){document.getElementById('modal').classList.remove('open');}
+document.getElementById('modal-close').addEventListener('click',closeModal);
+document.getElementById('modal').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+renderCarousel();
+</script>
 </body>
 </html>
