@@ -1,0 +1,889 @@
+import React, { useState } from 'react';
+import { 
+  ChevronLeft, 
+  ChevronRight, 
+  Star, 
+  X, 
+  Sparkles,
+  ArrowUpRight
+} from 'lucide-react';
+
+interface Webtoon {
+  id: number;
+  title: string;
+  genreLabel: string;
+  author: string;
+  description: string;
+  views: string;
+  rating: number;
+  badge: string;
+  coverArt: React.ReactNode;
+}
+
+const WEBTOONS: Webtoon[] = [
+  {
+    id: 1,
+    title: "용의 눈을 가진 검사",
+    genreLabel: "판타지 / 액션",
+    author: "글 스토리크루 · 그림 아티잔",
+    description: "봉인된 고대 멸악룡의 붉은 안구를 이식받은 검사 이안. 대륙을 집어삼키려는 마왕군에 맞서 각성한 마검의 칼날을 겨눈다!",
+    views: "1.2억회",
+    rating: 9.94,
+    badge: "글로벌 1위",
+    coverArt: (
+      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
+        <defs>
+          <linearGradient id="bg_char1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#1e1b4b" />
+            <stop offset="50%" stopColor="#0f172a" />
+            <stop offset="100%" stopColor="#020617" />
+          </linearGradient>
+          <linearGradient id="blade_energy" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#38bdf8" />
+            <stop offset="50%" stopColor="#818cf8" />
+            <stop offset="100%" stopColor="#c084fc" />
+          </linearGradient>
+          <radialGradient id="dragonEye_glow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%" stopColor="#ef4444" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#991b1b" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        {/* 배경 & 검기 이펙트 */}
+        <rect width="400" height="600" fill="url(#bg_char1)" />
+        <path d="M-50 400 L450 150 L400 100 L-100 350 Z" fill="url(#blade_energy)" opacity="0.35" />
+        <path d="M-20 480 L420 230" stroke="#38bdf8" strokeWidth="4" opacity="0.8" />
+        
+        {/* 남주인공: 판타지 검사 얼굴 (네이버웹툰 스타일) */}
+        {/* 목 & 갑옷 카라 */}
+        <path d="M160 380 L160 490 L240 490 L240 380 Z" fill="#fcd34d" opacity="0.1" />
+        <path d="M150 420 L200 470 L250 420 L270 540 L130 540 Z" fill="#1e293b" stroke="#ca8a04" strokeWidth="2" />
+        <path d="M170 340 L200 400 L230 340 Z" fill="#fed7aa" />
+        
+        {/* 얼굴 윤곽 */}
+        <polygon points="135,220 150,300 200,360 250,300 265,220 200,190" fill="#ffedd5" />
+        {/* 볼 & 턱 쉐딩 */}
+        <polygon points="150,300 200,360 250,300 230,340 200,355 170,340" fill="#fed7aa" />
+
+        {/* 흑발 & 샤프한 웹툰 헤어스타일 */}
+        <path d="M120 230 Q140 130 200 130 Q260 130 280 230 Q290 290 280 320 L265 240 Q250 170 200 170 Q150 170 135 240 L120 320 Z" fill="#0f172a" />
+        {/* 앞머리 가닥들 */}
+        <path d="M130 180 L160 270 L175 220 L200 290 L225 210 L245 270 L270 180 Z" fill="#1e293b" />
+        <path d="M150 170 L180 250 L195 200 L210 260 L235 180 Z" fill="#090d16" />
+
+        {/* 날카로운 눈매 (좌: 정상안 / 우: 각성한 붉은 용의 눈) */}
+        {/* 왼쪽 눈 */}
+        <path d="M155 245 Q175 235 185 250 Q170 255 155 245 Z" fill="#0f172a" />
+        <circle cx="172" cy="246" r="3.5" fill="#38bdf8" />
+        <circle cx="174" cy="244" r="1.2" fill="#ffffff" />
+        {/* 오른쪽 각성 붉은 용의 눈 (흉터 + 오라) */}
+        <circle cx="228" cy="246" r="18" fill="url(#dragonEye_glow)" />
+        <line x1="228" y1="220" x2="228" y2="270" stroke="#ef4444" strokeWidth="2" strokeLinecap="round" />
+        <path d="M215 250 Q225 235 245 245 Q230 255 215 250 Z" fill="#450a0a" stroke="#ef4444" strokeWidth="1" />
+        <ellipse cx="228" cy="246" rx="3.5" ry="5" fill="#fef08a" />
+        <ellipse cx="228" cy="246" rx="1.5" ry="4" fill="#dc2626" />
+
+        {/* 오똑한 코 & 굳게 다문 입술 */}
+        <path d="M198 275 L203 295 L196 298" stroke="#fba77a" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M188 322 Q200 326 212 322" stroke="#e17a55" strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* 하단 타이틀 영역 */}
+        <rect y="480" width="400" height="120" fill="url(#card_bottom_grad)" />
+      </svg>
+    )
+  },
+  {
+    id: 2,
+    title: "천재 연금술사의 만능 샵",
+    genreLabel: "현대 판타지 / 힐링",
+    author: "글 히스토리 · 그림 앨리스",
+    description: "차원 게이트 앞 골든 포션 전문 샵의 천재 안경 미소녀 연금술사! 전 세계 SS급 헌터들이 그녀의 포션을 구하기 위해 줄을 선다.",
+    views: "8,500만회",
+    rating: 9.88,
+    badge: "드라마화 확정",
+    coverArt: (
+      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
+        <defs>
+          <linearGradient id="bg_char2" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#064e3b" />
+            <stop offset="50%" stopColor="#022c22" />
+            <stop offset="100%" stopColor="#061a14" />
+          </linearGradient>
+          <radialGradient id="sparkle_alchemy" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%" stopColor="#34d399" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="#064e3b" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <rect width="400" height="600" fill="url(#bg_char2)" />
+        <circle cx="280" cy="180" r="100" fill="url(#sparkle_alchemy)" />
+
+        {/* 여주인공: 귀여운 안경 연금술사 캐릭터 얼굴 */}
+        <polygon points="145,230 155,300 200,355 245,300 255,230 200,205" fill="#fff7ed" />
+        <polygon points="155,300 200,355 245,300 230,335 200,350 170,335" fill="#fed7aa" />
+
+        {/* 산뜻한 민트/에메랄드빛 단발 웨이브 헤어 */}
+        <path d="M125 210 Q140 120 200 120 Q260 120 275 210 Q290 280 270 350 L250 340 Q260 280 255 220 Q240 160 200 160 Q160 160 145 220 Q140 280 150 340 L130 350 Z" fill="#059669" />
+        {/* 뱅 앞머리 */}
+        <path d="M140 170 Q200 190 260 170 L255 230 Q200 245 145 230 Z" fill="#10b981" />
+        <path d="M165 230 L175 260 L185 230 M215 230 L225 260 L235 230" stroke="#059669" strokeWidth="2" />
+
+        {/* 둥근 골드 테 안경 */}
+        <circle cx="170" cy="255" r="18" stroke="#fbbf24" strokeWidth="3" fill="none" />
+        <circle cx="230" cy="255" r="18" stroke="#fbbf24" strokeWidth="3" fill="none" />
+        <line x1="188" y1="255" x2="212" y2="255" stroke="#fbbf24" strokeWidth="3" />
+
+        {/* 초롱초롱한 에메랄드 눈망울 */}
+        <circle cx="170" cy="255" r="8" fill="#047857" />
+        <circle cx="170" cy="255" r="5" fill="#34d399" />
+        <circle cx="168" cy="252" r="2.5" fill="#ffffff" />
+        <circle cx="230" cy="255" r="8" fill="#047857" />
+        <circle cx="230" cy="255" r="5" fill="#34d399" />
+        <circle cx="228" cy="252" r="2.5" fill="#ffffff" />
+
+        {/* 홍조 & 미소 */}
+        <ellipse cx="150" cy="285" rx="8" ry="4" fill="#f43f5e" opacity="0.4" />
+        <ellipse cx="250" cy="285" rx="8" ry="4" fill="#f43f5e" opacity="0.4" />
+        <path d="M192 315 Q200 325 208 315" stroke="#f43f5e" strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* 마법 포션 병을 들고 있는 손 */}
+        <g transform="translate(230, 360)">
+          <path d="M20 0 L40 0 L40 15 L55 50 C60 65 50 80 30 80 C10 80 0 65 5 50 L20 15 Z" fill="#10b981" stroke="#facc15" strokeWidth="3" opacity="0.9" />
+          <circle cx="30" cy="55" r="6" fill="#fef08a" />
+        </g>
+      </svg>
+    )
+  },
+  {
+    id: 3,
+    title: "내 연애는 로딩 중",
+    genreLabel: "로맨스 코미디",
+    author: "글/그림 핑크문 Studio",
+    description: "게임 속 랭킹 1위 길드마스터와 까칠하고 잘생긴 본부장님의 앙큼살벌 사내 밀당 로맨스!",
+    views: "6,400만회",
+    rating: 9.91,
+    badge: "독점 연재",
+    coverArt: (
+      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
+        <defs>
+          <linearGradient id="bg_char3" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#4c0519" />
+            <stop offset="50%" stopColor="#1f121d" />
+            <stop offset="100%" stopColor="#0c070e" />
+          </linearGradient>
+          <radialGradient id="pink_glow" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%" stopColor="#fb7185" stopOpacity="0.6" />
+            <stop offset="100%" stopColor="#881337" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <rect width="400" height="600" fill="url(#bg_char3)" />
+        <circle cx="200" cy="200" r="160" fill="url(#pink_glow)" />
+
+        {/* 남주인공: 로맨스 웹툰 스타일 훈남 본부장 얼굴 */}
+        <path d="M165 370 L165 470 L235 470 L235 370 Z" fill="#fed7aa" />
+        {/* 화이트 셔츠 & 블랙 타이/수트 */}
+        <path d="M140 430 L200 470 L260 430 L280 550 L120 550 Z" fill="#0f172a" />
+        <polygon points="175,430 200,470 225,430 215,480 185,480" fill="#ffffff" />
+        <polygon points="195,445 205,445 208,520 192,520" fill="#e11d48" />
+
+        {/* 날렵한 V라인 얼굴 */}
+        <polygon points="140,225 155,295 200,355 245,295 260,225 200,200" fill="#fff7ed" />
+        <polygon points="155,295 200,355 245,295 230,335 200,350 170,335" fill="#fde68a" opacity="0.5" />
+
+        {/* 쉼표머리 스타일 브라운/애쉬 블랙 헤어 */}
+        <path d="M125 220 Q145 125 200 125 Q255 125 275 220 L265 260 Q255 160 200 160 Q145 160 135 260 Z" fill="#1c1917" />
+        {/* 자연스러운 가르마 & 쉼표 앞머리 컬 */}
+        <path d="M135 170 Q170 170 180 245 Q165 245 150 210 Z" fill="#292524" />
+        <path d="M185 165 Q230 165 240 250 Q255 220 265 175 Z" fill="#292524" />
+
+        {/* 깊고 그윽한 눈빛 & 속눈썹 */}
+        <path d="M155 245 Q172 235 185 248" stroke="#1c1917" strokeWidth="2.5" strokeLinecap="round" />
+        <ellipse cx="170" cy="252" rx="4" ry="5" fill="#4c0519" />
+        <circle cx="171" cy="250" r="1.5" fill="#ffffff" />
+
+        <path d="M215 248 Q228 235 245 245" stroke="#1c1917" strokeWidth="2.5" strokeLinecap="round" />
+        <ellipse cx="230" cy="252" rx="4" ry="5" fill="#4c0519" />
+        <circle cx="229" cy="250" r="1.5" fill="#ffffff" />
+
+        {/* 오똑한 콧날 & 매력적인 입꼬리 */}
+        <path d="M198 265 L203 290 L196 294" stroke="#fba77a" strokeWidth="2" strokeLinecap="round" />
+        <path d="M190 322 Q200 324 212 318" stroke="#e11d48" strokeWidth="2.5" strokeLinecap="round" />
+
+        {/* 핑크빛 반짝이 & 게임 하트 아이콘 */}
+        <path d="M290 140 Q305 120 320 140 Q335 160 290 195 Q245 160 260 140 Q275 120 290 140 Z" fill="#f43f5e" opacity="0.8" />
+      </svg>
+    )
+  },
+  {
+    id: 4,
+    title: "그림자 제국의 흑막 영애",
+    genreLabel: "로맨스 판타지",
+    author: "글 벨라 · 그림 로판 랩",
+    description: "시한부 악녀로 빙의한 은발의 대공 영애 엘레나. 우아하고 치명적인 지략으로 황실 전체를 손바닥 위에 올려놓는다.",
+    views: "9,800만회",
+    rating: 9.96,
+    badge: "글로벌 톱5",
+    coverArt: (
+      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
+        <defs>
+          <linearGradient id="bg_char4" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#2e1065" />
+            <stop offset="50%" stopColor="#1e1b4b" />
+            <stop offset="100%" stopColor="#090514" />
+          </linearGradient>
+          <radialGradient id="purple_magic" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%" stopColor="#c084fc" stopOpacity="0.7" />
+            <stop offset="100%" stopColor="#2e1065" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <rect width="400" height="600" fill="url(#bg_char4)" />
+        <circle cx="200" cy="190" r="170" fill="url(#purple_magic)" />
+
+        {/* 화려한 황실 드레스 넥라인 & 루비 목걸이 */}
+        <path d="M165 370 L165 440 L235 440 L235 370 Z" fill="#fdf2f8" />
+        <path d="M130 430 Q200 480 270 430 L290 550 L110 550 Z" fill="#3b0764" stroke="#eab308" strokeWidth="2" />
+        {/* 목걸이 & 물방울 보석 */}
+        <path d="M170 405 Q200 425 230 405" stroke="#facc15" strokeWidth="2.5" fill="none" />
+        <ellipse cx="200" cy="425" rx="6" ry="9" fill="#dc2626" stroke="#fef08a" strokeWidth="1.5" />
+
+        {/* 여주인공: 매혹적인 은발 악녀 영애 얼굴 */}
+        <polygon points="145,225 155,295 200,350 245,295 255,225 200,200" fill="#fff1f2" />
+
+        {/* 풍성하고 화려한 은발 롱 웨이브 헤어 */}
+        <path d="M110 210 Q140 100 200 100 Q260 100 290 210 Q315 320 285 450 L255 430 Q275 320 260 220 Q240 145 200 145 Q160 145 140 220 Q125 320 145 430 L115 450 Q85 320 110 210 Z" fill="#e2e8f0" />
+        <path d="M140 160 Q170 160 185 240 Q200 160 230 160 Q245 200 255 240" stroke="#cbd5e1" strokeWidth="3" fill="none" />
+
+        {/* 골드 & 보석 티아라 (왕관) */}
+        <polygon points="160,140 180,110 200,145 220,110 240,140" fill="#facc15" stroke="#fef08a" strokeWidth="1" />
+        <circle cx="200" cy="135" r="3.5" fill="#dc2626" />
+
+        {/* 도도하고 날카로운 고양이상 보랏빛 눈매 */}
+        <path d="M152 240 Q172 230 186 242 Q170 250 152 240 Z" fill="#1e1b4b" />
+        <ellipse cx="170" cy="242" rx="4.5" ry="5.5" fill="#9333ea" />
+        <ellipse cx="170" cy="242" rx="2" ry="4" fill="#f3e8ff" />
+        <circle cx="168" cy="239" r="1.5" fill="#ffffff" />
+        {/* 아이라인 꼬리 샥 */}
+        <path d="M184 240 L190 234" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" />
+
+        <path d="M214 242 Q228 230 248 240 Q230 250 214 242 Z" fill="#1e1b4b" />
+        <ellipse cx="230" cy="242" rx="4.5" ry="5.5" fill="#9333ea" />
+        <ellipse cx="230" cy="242" rx="2" ry="4" fill="#f3e8ff" />
+        <circle cx="228" cy="239" r="1.5" fill="#ffffff" />
+        <path d="M246 240 L252 234" stroke="#0f172a" strokeWidth="2" strokeLinecap="round" />
+
+        {/* 붉은 립 & 매혹적인 미소 */}
+        <path d="M198 265 L202 288 L196 292" stroke="#f472b6" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M190 318 Q200 326 210 318" stroke="#be123c" strokeWidth="3" strokeLinecap="round" />
+      </svg>
+    )
+  },
+  {
+    id: 5,
+    title: "무림 레벨업 센터",
+    genreLabel: "무협 / 현대 액션",
+    author: "글 강호 · 그림 무극",
+    description: "화산파의 붉은 매화검존이 현대 강남 헌터 시험장에 강림했다. 압도적인 무공 수련으로 현대 헌터 랭킹 1위를 탈환한다!",
+    views: "1.5억회",
+    rating: 9.95,
+    badge: "게임화 확정",
+    coverArt: (
+      <svg className="w-full h-full object-cover" viewBox="0 0 400 600" fill="none">
+        <defs>
+          <linearGradient id="bg_char5" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#450a0a" />
+            <stop offset="50%" stopColor="#18181b" />
+            <stop offset="100%" stopColor="#09090b" />
+          </linearGradient>
+          <radialGradient id="flame_aura" cx="0.5" cy="0.5" r="0.5">
+            <stop offset="0%" stopColor="#f97316" stopOpacity="0.8" />
+            <stop offset="60%" stopColor="#ef4444" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#000000" stopOpacity="0" />
+          </radialGradient>
+        </defs>
+        <rect width="400" height="600" fill="url(#bg_char5)" />
+        <circle cx="200" cy="210" r="160" fill="url(#flame_aura)" />
+
+        {/* 휘날리는 붉은 매화 꽃잎 이펙트 */}
+        <ellipse cx="120" cy="160" rx="12" ry="6" fill="#f43f5e" transform="rotate(-30 120 160)" />
+        <ellipse cx="280" cy="140" rx="14" ry="7" fill="#fb7185" transform="rotate(40 280 140)" />
+        <ellipse cx="260" cy="270" rx="10" ry="5" fill="#f43f5e" transform="rotate(15 260 270)" />
+
+        {/* 동양풍 무사 복장 & 붉은 깃 카라 */}
+        <path d="M165 370 L165 480 L235 480 L235 370 Z" fill="#fed7aa" />
+        <path d="M140 430 L200 475 L260 430 L280 550 L120 550 Z" fill="#18181b" stroke="#ef4444" strokeWidth="2.5" />
+        <path d="M170 430 L200 475 L180 550" stroke="#f59e0b" strokeWidth="2" />
+
+        {/* 날카롭고 다부진 턱선 */}
+        <polygon points="135,225 150,295 200,355 250,295 265,225 200,195" fill="#ffedd5" />
+        <polygon points="150,295 200,355 250,295 235,335 200,350 165,335" fill="#fed7aa" />
+
+        {/* 흩날리는 와일드 롱 흑발 & 붉은 머리끈 */}
+        <path d="M115 230 Q140 115 200 115 Q260 115 285 230 Q305 340 280 430 L255 410 Q270 310 260 210 Q240 150 200 150 Q160 150 140 210 Q130 310 145 410 L120 430 Z" fill="#09090b" />
+        {/* 이마의 붉은 화산파 인장 */}
+        <path d="M195 205 Q200 190 205 205 Q200 215 195 205 Z" fill="#ef4444" />
+
+        {/* 살기 넘치는 카리스마 맹렬한 눈매 */}
+        <path d="M152 245 L185 240 Q170 255 152 245 Z" fill="#09090b" />
+        <ellipse cx="170" cy="245" rx="4" ry="4.5" fill="#ea580c" />
+        <circle cx="170" cy="245" r="1.5" fill="#fef08a" />
+        {/* 짙은 검미 (무협 눈썹) */}
+        <polygon points="145,230 185,225 180,232 148,235" fill="#09090b" />
+
+        <path d="M215 240 L248 245 Q230 255 215 240 Z" fill="#09090b" />
+        <ellipse cx="230" cy="245" rx="4" ry="4.5" fill="#ea580c" />
+        <circle cx="230" cy="245" r="1.5" fill="#fef08a" />
+        <polygon points="215,225 255,230 252,235 220,232" fill="#09090b" />
+
+        {/* 오똑한 코 & 자신만만한 입꼬리 */}
+        <path d="M198 268 L203 292 L195 296" stroke="#fba77a" strokeWidth="2" strokeLinecap="round" />
+        <path d="M188 322 Q200 324 212 316" stroke="#b91c1c" strokeWidth="2.5" strokeLinecap="round" />
+      </svg>
+    )
+  }
+];
+
+export default function App() {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedWebtoon, setSelectedWebtoon] = useState<Webtoon | null>(null);
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % WEBTOONS.length);
+  };
+
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev - 1 + WEBTOONS.length) % WEBTOONS.length);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FCFCF9] text-stone-900 font-sans selection:bg-amber-400 selection:text-stone-950 overflow-x-hidden">
+      
+      {/* 1. GNB NAVIGATION */}
+      <header className="fixed top-0 left-0 right-0 z-50 py-4 bg-white/90 backdrop-blur-md border-b border-stone-200/80 shadow-sm transition-all">
+        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
+          <a href="#" className="flex items-center gap-3.5 group">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
+              <div className="w-full h-full bg-stone-950 rounded-[9px] flex items-center justify-center font-black text-xl text-amber-400">
+                H
+              </div>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-black text-xl tracking-wider text-stone-900">HEESTORY</span>
+              <span className="text-[10px] tracking-[0.25em] text-amber-600 font-bold uppercase">WEBTOON AGENCY</span>
+            </div>
+          </a>
+          
+          <div className="flex items-center gap-6">
+            <div className="text-xs text-stone-500 font-semibold tracking-widest uppercase hidden md:block">
+              PREMIUM WEBTOON IP STUDIO
+            </div>
+            <a 
+              href="#portfolio" 
+              className="px-4 py-2 rounded-full bg-stone-900 text-amber-400 text-xs font-bold hover:bg-amber-500 hover:text-stone-950 transition-colors shadow-sm"
+            >
+              라인업 보기
+            </a>
+          </div>
+        </div>
+      </header>
+
+
+      {/* 2. HERO SECTION */}
+      <section className="relative min-h-[90vh] flex items-center justify-center pt-24 pb-16 overflow-hidden">
+        
+        {/* 화이트 & 웜 크림 베이스 배경 */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF8] via-[#FAF6EE] to-[#FCFCF9] z-0" />
+        
+        {/* 은은한 엠비언트 백라이트 */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-amber-200/40 via-orange-100/30 to-stone-100/20 blur-[130px] rounded-full pointer-events-none" />
+
+        {/* 🌟 다이내믹 만화풍 배틀 일러스트 (용사 vs 거대 드래곤 브레스 격돌) */}
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10 opacity-90">
+          <svg viewBox="0 0 1440 850" fill="none" className="w-full h-auto max-h-[90vh] object-cover">
+            <defs>
+              {/* 드래곤 화염 브레스 그라데이션 */}
+              <radialGradient id="dragonBreath" cx="0.2" cy="0.4" r="0.8">
+                <stop offset="0%" stopColor="#fef08a" />
+                <stop offset="30%" stopColor="#f97316" />
+                <stop offset="70%" stopColor="#ef4444" stopOpacity="0.8" />
+                <stop offset="100%" stopColor="#7f1d1d" stopOpacity="0" />
+              </radialGradient>
+
+              {/* 용사의 검기 오라 그라데이션 */}
+              <linearGradient id="heroSwordAura" x1="0" y1="1" x2="1" y2="0">
+                <stop offset="0%" stopColor="#38bdf8" />
+                <stop offset="50%" stopColor="#818cf8" />
+                <stop offset="80%" stopColor="#fbbf24" />
+                <stop offset="100%" stopColor="#ffffff" />
+              </linearGradient>
+
+              <linearGradient id="smokeGround" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.15" />
+                <stop offset="100%" stopColor="#FCFCF9" stopOpacity="1" />
+              </linearGradient>
+            </defs>
+
+            {/* 배경 만화 집중선 (Speed Lines) */}
+            <g stroke="#d97706" strokeWidth="1" opacity="0.15">
+              <line x1="0" y1="200" x2="680" y2="400" strokeDasharray="15 10" />
+              <line x1="0" y1="350" x2="680" y2="420" strokeDasharray="20 15" />
+              <line x1="1440" y1="150" x2="800" y2="380" strokeDasharray="25 15" />
+              <line x1="1440" y1="320" x2="820" y2="420" strokeDasharray="15 10" />
+            </g>
+
+            {/* [우측] 거대 화염룡 (Dragon) 캐릭터 컷 */}
+            <g transform="translate(780, 100)">
+              {/* 드래곤 브레스 폭풍 */}
+              <path d="M-40 280 Q-260 270 -420 310 Q-240 370 -20 340 Z" fill="url(#dragonBreath)" opacity="0.85" />
+              
+              {/* 드래곤 머리 & 거대한 턱 & 뿔 */}
+              <path d="M280 20 C220 30 180 80 120 140 C70 190 0 230 -60 260 C-30 280 20 285 80 265 C40 300 -10 320 -50 330 C0 360 80 340 140 310 C200 280 240 230 300 210 C360 260 460 300 520 320 L550 150 C480 110 400 40 280 20 Z" 
+                    fill="#18181b" stroke="#ca8a04" strokeWidth="3" />
+              
+              {/* 웅장한 황금 뿔 2개 */}
+              <path d="M200 70 Q280 -40 380 -50 Q310 40 250 100 Z" fill="#eab308" stroke="#fef08a" strokeWidth="2" />
+              <path d="M160 110 Q210 20 290 10 Q240 70 200 130 Z" fill="#ca8a04" />
+
+              {/* 불타오르는 황금-적색 드래곤 눈 */}
+              <ellipse cx="60" cy="220" rx="14" ry="8" fill="#fef08a" />
+              <ellipse cx="60" cy="220" rx="4" ry="8" fill="#ef4444" />
+
+              {/* 날카로운 드래곤 이빨들 */}
+              <polygon points="-20,270 0,290 15,272" fill="#ffffff" />
+              <polygon points="30,268 45,288 60,265" fill="#ffffff" />
+              <polygon points="-10,325 5,305 20,322" fill="#ffffff" />
+              <polygon points="35,320 50,302 65,318" fill="#ffffff" />
+
+              {/* 비늘 & 디테일 하이라이트 */}
+              <path d="M180 170 Q220 160 260 180 M150 210 Q190 200 230 220" stroke="#ca8a04" strokeWidth="2" fill="none" />
+            </g>
+
+            {/* [좌측] 검을 휘두르며 도약하는 용사 (Warrior) 캐릭터 */}
+            <g transform="translate(240, 240)">
+              {/* 용사의 휘날리는 푸른/붉은 망토 */}
+              <path d="M-60 240 Q-150 180 -180 290 Q-90 320 -30 290 Z" fill="#be123c" opacity="0.9" />
+              <path d="M-40 250 Q-110 320 -150 420 Q-60 380 0 320 Z" fill="#9f1239" />
+
+              {/* 용사 몸체 & 황금 플레이트 갑옷 */}
+              <path d="M-30 220 L20 180 L70 240 L30 320 L-20 300 Z" fill="#1e293b" stroke="#eab308" strokeWidth="3" />
+              {/* 어깨 견갑 & 팔 역동적 포즈 */}
+              <circle cx="20" cy="180" r="22" fill="#eab308" stroke="#fef08a" strokeWidth="2" />
+              <path d="M25 175 L120 100 L140 120 L55 200 Z" fill="#334155" />
+
+              {/* 용사 얼굴 & 흩날리는 흑발 */}
+              <polygon points="0,150 25,185 50,155 35,125 10,125" fill="#ffedd5" />
+              <path d="M-15 135 Q10 75 55 125 Q70 165 40 175 Q5 170 -15 135 Z" fill="#0f172a" />
+              <path d="M-35 150 L10 130 L-20 170 Z" fill="#1e293b" />
+              {/* 결연한 눈빛 */}
+              <circle cx="32" cy="150" r="3" fill="#38bdf8" />
+
+              {/* 솟구치는 거대한 마검 & 검기 (브레스와 정면 충돌) */}
+              {/* 대검 본체 */}
+              <path d="M125 95 L260 -20 L275 -5 L140 110 Z" fill="#f8fafc" stroke="#64748b" strokeWidth="2" />
+              {/* 검신에 깃든 폭발적인 삼색 검기 오라 */}
+              <path d="M110 120 L420 -120 L400 -70 L160 140 Z" fill="url(#heroSwordAura)" opacity="0.8" />
+              <line x1="120" y1="110" x2="480" y2="-150" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
+            </g>
+
+            {/* 중앙 격돌 지점 스파크 파티클 */}
+            <g transform="translate(620, 390)">
+              <circle cx="0" cy="0" r="60" fill="#fef08a" opacity="0.6" />
+              <circle cx="0" cy="0" r="25" fill="#ffffff" />
+              <line x1="-80" y1="-80" x2="80" y2="80" stroke="#facc15" strokeWidth="4" />
+              <line x1="-80" y1="80" x2="80" y2="-80" stroke="#38bdf8" strokeWidth="4" />
+              <line x1="0" y1="-100" x2="0" y2="100" stroke="#f97316" strokeWidth="3" />
+            </g>
+
+            {/* 하단 안개/전장 그라운드 */}
+            <rect y="680" width="1440" height="170" fill="url(#smokeGround)" />
+          </svg>
+        </div>
+
+        {/* Hero 메인 카피 */}
+        <div className="relative z-20 max-w-5xl mx-auto px-6 text-center">
+          
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 border border-amber-300 shadow-md mb-6 backdrop-blur-sm">
+            <Sparkles className="w-4 h-4 text-amber-600" />
+            <span className="text-xs font-black tracking-widest text-amber-800 uppercase">
+              HEESTORY ORIGINAL IP STUDIO
+            </span>
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-stone-900 mb-6 leading-[1.18] drop-shadow-sm">
+            당신의 이야기는<br />
+            <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
+              우리의 세계가 된다
+            </span>
+          </h1>
+
+          <p className="max-w-xl mx-auto text-lg text-stone-700 font-semibold leading-relaxed drop-shadow-sm">
+            살아 숨 쉬는 캐릭터와 압도적인 스케일의 스토리텔링,<br />
+            전 세계 독자들을 열광시키는 오리지널 웹툰을 만듭니다.
+          </p>
+
+        </div>
+
+      </section>
+
+
+      {/* 🌟 3. WHAT WE DO SECTION (DISCOVER / DEVELOP / EXPAND) */}
+      <section className="py-24 bg-white relative overflow-hidden border-t border-stone-200/70">
+        
+        {/* 배경 골드 워터마크 & 라이트 */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-amber-100/40 blur-[120px] pointer-events-none rounded-full" />
+        
+        <div className="max-w-7xl mx-auto px-8 relative z-10">
+          
+          {/* 섹션 헤더 */}
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-black tracking-widest uppercase mb-3">
+              WHAT WE DO
+            </div>
+            <h2 className="text-3xl md:text-4xl font-black text-stone-900 tracking-tight">
+              스토리가 글로벌 IP로 완성되는 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600">3단계 여정</span>
+            </h2>
+            <p className="text-stone-500 text-sm md:text-base mt-3 font-medium">
+              독창적인 원작 발굴부터 고퀄리티 스튜디오 제작, 글로벌 미디어믹스 확장까지 체계적으로 연결합니다.
+            </p>
+          </div>
+
+          {/* 3대 핵심 기둥 그리드 (DISCOVER / DEVELOP / EXPAND) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+            
+            {/* 연결 플로우 화살표 라인 (PC 웹) */}
+            <div className="hidden md:block absolute top-1/2 left-1/4 right-1/4 h-[2px] bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300 -translate-y-12 z-0 stroke-dashed" />
+
+            {/* STEP 1: DISCOVER */}
+            <div className="group relative bg-[#FCFCF9] rounded-3xl p-8 border border-stone-200/90 shadow-lg shadow-stone-200/40 hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between">
+              
+              <div>
+                {/* 상단 스텝 뱃지 & 아이콘 */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
+                    <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-stone-900">
+                      <svg className="w-7 h-7 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        <path d="M11 8v6"></path>
+                        <path d="M8 11h6"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <span className="text-xs font-black tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                    STEP 01
+                  </span>
+                </div>
+
+                <h3 className="text-2xl font-black text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">
+                  DISCOVER
+                </h3>
+                <p className="text-xs font-bold text-amber-700 tracking-wider mb-4 uppercase">
+                  원석 IP 발굴 & 기획
+                </p>
+
+                <p className="text-stone-600 text-sm leading-relaxed mb-6">
+                  웹소설, 오리지널 시놉시스, 작가 고유의 스토리 중 글로벌 잠재력을 지닌 독창적 원석 IP를 정밀하게 발굴하고 시장성 있는 콘셉트로 정립합니다.
+                </p>
+              </div>
+
+              {/* 핵심 키워드 태그 */}
+              <div className="pt-4 border-t border-stone-200/70 flex flex-wrap gap-1.5">
+                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#원천스토리</span>
+                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#소설원작IP</span>
+                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#트렌드분석</span>
+              </div>
+            </div>
+
+            {/* STEP 2: DEVELOP */}
+            <div className="group relative bg-[#FCFCF9] rounded-3xl p-8 border border-stone-200/90 shadow-lg shadow-stone-200/40 hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between md:-translate-y-2">
+              
+              <div>
+                {/* 상단 스텝 뱃지 & 아이콘 */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-500 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
+                    <div className="w-full h-full bg-stone-950 rounded-[14px] flex items-center justify-center text-amber-400">
+                      <svg className="w-7 h-7 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
+                        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
+                        <path d="M2 2l7.586 7.586"></path>
+                        <circle cx="11" cy="11" r="2"></circle>
+                      </svg>
+                    </div>
+                  </div>
+                  <span className="text-xs font-black tracking-widest text-white bg-stone-900 px-3 py-1 rounded-full border border-amber-500/40">
+                    STEP 02
+                  </span>
+                </div>
+
+                <h3 className="text-2xl font-black text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">
+                  DEVELOP
+                </h3>
+                <p className="text-xs font-bold text-amber-700 tracking-wider mb-4 uppercase">
+                  스튜디오 전문 제작 파이프라인
+                </p>
+
+                <p className="text-stone-600 text-sm leading-relaxed mb-6">
+                  각색, 콘티, 선화, 채색, 3D 배경, 후보정에 이르는 분업화된 전문 스튜디오 시스템으로 매화 극장판 수준의 고퀄리티 작화를 완성합니다.
+                </p>
+              </div>
+
+              {/* 핵심 키워드 태그 */}
+              <div className="pt-4 border-t border-stone-200/70 flex flex-wrap gap-1.5">
+                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#작화스튜디오</span>
+                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#콘티각색</span>
+                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#3D배경보정</span>
+              </div>
+            </div>
+
+            {/* STEP 3: EXPAND */}
+            <div className="group relative bg-[#FCFCF9] rounded-3xl p-8 border border-stone-200/90 shadow-lg shadow-stone-200/40 hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between">
+              
+              <div>
+                {/* 상단 스텝 뱃지 & 아이콘 */}
+                <div className="flex items-center justify-between mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
+                    <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-stone-900">
+                      <svg className="w-7 h-7 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                      </svg>
+                    </div>
+                  </div>
+                  <span className="text-xs font-black tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
+                    STEP 03
+                  </span>
+                </div>
+
+                <h3 className="text-2xl font-black text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">
+                  EXPAND
+                </h3>
+                <p className="text-xs font-bold text-amber-700 tracking-wider mb-4 uppercase">
+                  글로벌 연재 & 미디어믹스 확장
+                </p>
+
+                <p className="text-stone-600 text-sm leading-relaxed mb-6">
+                  네이버, 카카오, 라인 등 국내외 주요 플랫폼 동시 런칭 및 영상화(드라마/영화), 애니메이션, 게임, 굿즈 등 원소스 멀티유즈(OSMU)를 실현합니다.
+                </p>
+              </div>
+
+              {/* 핵심 키워드 태그 */}
+              <div className="pt-4 border-t border-stone-200/70 flex flex-wrap gap-1.5">
+                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#글로벌플랫폼</span>
+                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#드라마화</span>
+                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#게임·굿즈OSMU</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* 4. WEBTOON PORTFOLIO CAROUSEL (캐릭터 얼굴 중심 3D 원형 링 캐러셀) */}
+      <section id="portfolio" className="py-24 bg-[#FAF7F0] border-y border-stone-200/80 relative overflow-hidden">
+        
+        {/* 골드 엠비언트 백라이트 */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[450px] bg-gradient-to-r from-amber-200/30 via-yellow-200/20 to-stone-200/30 blur-[130px] pointer-events-none rounded-full" />
+
+        <div className="max-w-7xl mx-auto px-6 relative z-10">
+          
+          <div className="text-center max-w-2xl mx-auto mb-14">
+            <span className="text-amber-600 font-extrabold text-xs tracking-widest uppercase">FEATURED LINEUP</span>
+            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mt-2">
+              히스토리 대표 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-600">웹툰 라인업</span>
+            </h2>
+          </div>
+
+          {/* 3D 원형 배치 캐러셀 */}
+          <div className="relative h-[480px] flex items-center justify-center perspective-[1200px] select-none">
+            
+            {WEBTOONS.map((item, index) => {
+              const total = WEBTOONS.length;
+              let offset = index - activeIndex;
+
+              if (offset > total / 2) offset -= total;
+              if (offset < -total / 2) offset += total;
+
+              const absOffset = Math.abs(offset);
+              const isActive = offset === 0;
+
+              const translateX = offset * 230; 
+              const translateZ = -absOffset * 180; 
+              const rotateY = offset * -16; 
+              const opacity = absOffset > 2 ? 0 : 1 - absOffset * 0.25;
+              const zIndex = 20 - absOffset;
+
+              return (
+                <div
+                  key={item.id}
+                  onClick={() => {
+                    if (isActive) setSelectedWebtoon(item);
+                    else setActiveIndex(index);
+                  }}
+                  className={`absolute w-[280px] h-[420px] rounded-2xl cursor-pointer transition-all duration-700 ease-out shadow-2xl border overflow-hidden ${
+                    isActive 
+                      ? 'border-amber-400 shadow-amber-500/30 ring-4 ring-amber-400/40 scale-105' 
+                      : 'border-stone-200 hover:border-amber-300 opacity-80 hover:opacity-100'
+                  }`}
+                  style={{
+                    transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`,
+                    opacity: opacity,
+                    zIndex: zIndex,
+                    pointerEvents: opacity === 0 ? 'none' : 'auto'
+                  }}
+                >
+                  <div className="w-full h-full relative flex flex-col justify-between p-6 bg-stone-950">
+                    
+                    {/* 상단 뱃지 */}
+                    <div className="relative z-10 flex items-center justify-between">
+                      <span className="px-2.5 py-1 rounded-md text-[11px] font-extrabold bg-black/75 backdrop-blur-md text-amber-300 border border-amber-400/40 shadow-sm">
+                        {item.badge}
+                      </span>
+                      <span className="text-[11px] font-bold text-white bg-amber-600 px-2 py-0.5 rounded-md shadow-sm">
+                        {item.genreLabel}
+                      </span>
+                    </div>
+
+                    {/* 웹툰 캐릭터 커버 일러스트 */}
+                    <div className="absolute inset-0">
+                      {item.coverArt}
+                    </div>
+
+                    {/* 하단 타이틀 & 평점 */}
+                    <div className="relative z-10 bg-gradient-to-t from-black via-black/85 to-transparent -mx-6 -mb-6 p-5 pt-14">
+                      <div className="flex items-center justify-between text-xs mb-1.5">
+                        <span className="text-stone-300 text-[11px] font-medium">{item.author}</span>
+                        <div className="flex items-center gap-1 text-amber-400 font-black text-[12px]">
+                          <Star className="w-3.5 h-3.5 fill-amber-400" />
+                          <span>{item.rating}</span>
+                        </div>
+                      </div>
+                      
+                      <h3 className="text-lg font-black text-white line-clamp-1 flex items-center justify-between">
+                        <span>{item.title}</span>
+                        {isActive && <ArrowUpRight className="w-4 h-4 text-amber-400 flex-shrink-0 ml-1" />}
+                      </h3>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+
+          </div>
+
+          {/* 캐러셀 인디케이터 및 컨트롤 */}
+          <div className="flex items-center justify-center gap-6 mt-8">
+            <button
+              onClick={handlePrev}
+              className="p-3 rounded-full bg-white border border-stone-300 text-stone-700 hover:bg-amber-500 hover:text-stone-950 hover:border-amber-500 transition-colors shadow-sm"
+              aria-label="이전 작품"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+
+            <div className="flex items-center gap-2">
+              {WEBTOONS.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveIndex(idx)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    activeIndex === idx ? 'w-8 bg-amber-500' : 'w-2.5 bg-stone-300'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={handleNext}
+              className="p-3 rounded-full bg-white border border-stone-300 text-stone-700 hover:bg-amber-500 hover:text-stone-950 hover:border-amber-500 transition-colors shadow-sm"
+              aria-label="다음 작품"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+
+      {/* 4. FOOTER */}
+      <footer className="bg-white text-stone-500 border-t border-stone-200 py-10">
+        <div className="max-w-6xl mx-auto px-8 flex items-center justify-between text-xs">
+          
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2.5 mb-2">
+              <span className="font-black text-base tracking-wider text-stone-900">HEESTORY</span>
+              <span className="text-[11px] text-amber-600 font-bold">| (주)히스토리에이전시</span>
+            </div>
+            <p className="text-stone-600">
+              대표이사: 홍길동 | 사업자등록번호: 124-87-99201 | 문의: contact@heestory.com
+            </p>
+            <p className="text-stone-400">
+              주소: 서울특별시 강남구 테헤란로 427 히스토리 타워 12층
+            </p>
+          </div>
+
+          <div className="text-stone-400 text-right">
+            <p className="font-semibold">© 2026 HEESTORY AGENCY.</p>
+            <p className="text-[11px]">All Rights Reserved.</p>
+          </div>
+
+        </div>
+      </footer>
+
+
+      {/* 작품 상세 정보 모달 */}
+      {selectedWebtoon && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/60 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-white border border-stone-200 rounded-2xl max-w-xl w-full p-7 relative overflow-hidden shadow-2xl">
+            <button 
+              onClick={() => setSelectedWebtoon(null)}
+              className="absolute top-5 right-5 p-2 rounded-full bg-stone-100 text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-colors"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <div className="flex gap-6 items-start">
+              <div className="w-40 h-56 rounded-xl overflow-hidden flex-shrink-0 relative border border-stone-200 shadow-md">
+                {selectedWebtoon.coverArt}
+              </div>
+
+              <div className="flex-1 text-left">
+                <div className="flex items-center gap-2 mb-2">
+                  <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200">
+                    {selectedWebtoon.genreLabel}
+                  </span>
+                  <span className="text-xs font-bold text-stone-700 bg-stone-100 px-2 py-0.5 rounded">
+                    {selectedWebtoon.badge}
+                  </span>
+                </div>
+
+                <h3 className="text-2xl font-black text-stone-900 mb-1">{selectedWebtoon.title}</h3>
+                <p className="text-xs font-medium text-stone-500 mb-3">{selectedWebtoon.author}</p>
+
+                <p className="text-stone-600 text-xs leading-relaxed mb-5">
+                  {selectedWebtoon.description}
+                </p>
+
+                <div className="flex items-center justify-between py-2.5 px-4 rounded-xl bg-amber-50/60 border border-amber-100 text-xs text-stone-700 mb-5">
+                  <span className="font-semibold">누적 조회수 <strong className="text-stone-900">{selectedWebtoon.views}</strong></span>
+                  <span className="text-amber-600 font-bold flex items-center gap-1">
+                    <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
+                    {selectedWebtoon.rating}
+                  </span>
+                </div>
+
+                <button 
+                  onClick={() => setSelectedWebtoon(null)}
+                  className="w-full py-3 rounded-xl bg-stone-900 text-amber-400 font-bold text-xs hover:bg-amber-500 hover:text-stone-950 transition-colors shadow-sm"
+                >
+                  닫기
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  );
+}
