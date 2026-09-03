@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SITEMAP — HEESTORY Webtoon Agency</title>
+<link rel="icon" type="image/png" href="LOGO.png?v=2">
+<link rel="shortcut icon" type="image/png" href="LOGO.png?v=2">
+<link rel="apple-touch-icon" href="LOGO.png?v=2">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:16px}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Arial,'Noto Sans KR',sans-serif;
+  background:#000;color:#fff;overflow-x:hidden;min-height:100vh;
+  display:flex;flex-direction:column;
+}
+:root{
+  --yellow:#FFE100;
+  --gray2:#222;
+  --gray3:#666;
+  --gray4:#999;
+  --mono:'Courier New',Courier,monospace;
+  --nav:70px;
+}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#000}
+::-webkit-scrollbar-thumb{background:var(--yellow)}
+
+/* ─── GNB ─── */
+#gnb{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:var(--nav);
+  background:rgba(0,0,0,.5);
+  border-bottom:1px solid rgba(255,225,0,.15);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;gap:16px;
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+}
+.logo-group{
+  display:flex;align-items:center;text-decoration:none;cursor:pointer;
+  background:none;border:none;padding:0;
+}
+.logo-img{
+  height:26px;width:auto;display:block;
+  object-fit:contain;
+}
+.home-btn{
+  font-family:var(--mono);font-size:12px;font-weight:700;color:#000;
+  background:var(--yellow);border:none;padding:8px 18px;border-radius:4px;
+  cursor:pointer;text-decoration:none;transition:opacity .2s,transform .2s;
+  letter-spacing:.05em;display:inline-flex;align-items:center;gap:6px;
+}
+.home-btn:hover{opacity:.9;transform:translateY(-1px)}
+
+/* ─── MAIN CONTENT ─── */
+main{
+  flex:1;padding:calc(var(--nav) + 40px) 24px 60px;
+  max-width:1180px;width:100%;margin:0 auto;
+}
+.page-header{
+  margin-bottom:44px;
+}
+.page-eyebrow{
+  font-family:var(--mono);font-size:12px;color:var(--yellow);
+  letter-spacing:.25em;text-transform:uppercase;margin-bottom:10px;
+}
+.page-title{
+  font-size:clamp(2rem,4vw,3.2rem);font-weight:900;letter-spacing:-.02em;margin-bottom:14px;
+}
+.page-desc{
+  color:var(--gray4);font-size:clamp(13px,1.1vw,15px);line-height:1.7;
+}
+
+/* ─── SITEMAP GRID ─── */
+.sitemap-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:20px;
+}
+.sm-card{
+  background:#0a0a0a;border:1px solid var(--gray2);border-radius:8px;
+  padding:28px 24px;position:relative;overflow:hidden;
+  transition:border-color .3s,transform .3s;
+}
+.sm-card:hover{
+  border-color:var(--yellow);
+  transform:translateY(-3px);
+}
+.sm-header{
+  display:flex;align-items:baseline;justify-content:space-between;
+  border-bottom:1px solid #1a1a1a;padding-bottom:14px;margin-bottom:18px;
+}
+.sm-num{
+  font-family:var(--mono);font-size:11px;color:var(--yellow);
+  letter-spacing:.15em;font-weight:700;
+}
+.sm-link{
+  font-size:1.3rem;font-weight:900;color:#fff;text-decoration:none;
+  transition:color .2s;display:inline-flex;align-items:center;gap:6px;
+}
+.sm-link:hover{
+  color:var(--yellow);
+}
+.sm-link::after{
+  content:'↗';font-size:.9em;opacity:.5;transition:opacity .2s,transform .2s;
+}
+.sm-link:hover::after{
+  opacity:1;transform:translate(2px,-2px);
+}
+.sm-list{
+  list-style:none;display:flex;flex-direction:column;gap:12px;
+}
+.sm-item{
+  display:flex;flex-direction:column;gap:4px;
+}
+.sm-item-title{
+  color:#ddd;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;
+}
+.sm-item-title::before{
+  content:'';width:4px;height:4px;background:var(--yellow);border-radius:50%;
+}
+.sm-item-desc{
+  color:var(--gray4);font-size:12px;padding-left:12px;line-height:1.5;
+}
+
+/* ─── FOOTER ─── */
+footer{
+  background:#000;border-top:2px solid var(--yellow);padding:22px 28px;
+}
+.footer-inner{
+  max-width:1180px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;
+}
+.footer-logo{height:22px;width:auto;display:block;object-fit:contain}
+.footer-copy{font-family:var(--mono);font-size:9px;color:var(--gray3);letter-spacing:.12em;margin-top:4px}
+.footer-nav{display:flex;gap:6px;flex-wrap:wrap}
+.fn{
+  font-family:var(--mono);font-size:10px;color:var(--gray4);
+  border:1px solid var(--gray2);padding:5px 12px;cursor:pointer;background:transparent;
+  text-decoration:none;transition:border-color .2s,color .2s;
+}
+.fn:hover{border-color:var(--yellow);color:var(--yellow)}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:960px){
+  .sitemap-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:640px){
+  #gnb{padding:0 16px;height:60px}
+  .logo-img{height:22px}
+  .home-btn{padding:6px 12px;font-size:11px}
+  .sitemap-grid{grid-template-columns:1fr}
+  main{padding:calc(var(--nav) + 24px) 16px 40px}
+}
+</style>
+</head>
+<body>
+
+<header id="gnb">
+  <a class="logo-group" href="index.html" aria-label="HEESTORY HOME">
+    <img class="logo-img" src="heestory-logo.png?v=2" alt="HEESTORY">
+  </a>
+  <a class="home-btn" href="index.html">
+    <span>MAIN SITE</span> &rarr;
+  </a>
+</header>
+
+<main>
+  <div class="page-header">
+    <p class="page-eyebrow">[ HEESTORY WEBTOON AGENCY ]</p>
+    <h1 class="page-title">SITEMAP</h1>
+    <p class="page-desc">HEESTORY 웹사이트의 전체 섹션 구성과 주요 콘텐츠를 한눈에 확인하실 수 있습니다.</p>
+  </div>
+
+  <div class="sitemap-grid">
+    <!-- 01. HOME -->
+    <div class="sm-card">
+      <div class="sm-header">
+        <span class="sm-num">SECTION 01</span>
+        <a class="sm-link" href="index.html#hero">HOME</a>
+      </div>
+      <ul class="sm-list">
+        <li class="sm-item">
+          <span class="sm-item-title">Brand Eyebrow</span>
+          <span class="sm-item-desc">[ HEESTORY WEBTOON AGENCY ]</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">Main Slogan</span>
+          <span class="sm-item-desc">"당신의 이야기는 우리의 세계가 된다"</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">Introduction</span>
+          <span class="sm-item-desc">작가의 고유한 시선과 새로운 이야기 발굴 및 글로벌 연결</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 02. WORKS -->
+    <div class="sm-card">
+      <div class="sm-header">
+        <span class="sm-num">SECTION 02</span>
+        <a class="sm-link" href="index.html#works">WORKS</a>
+      </div>
+      <ul class="sm-list">
+        <li class="sm-item">
+          <span class="sm-item-title">Headings</span>
+          <span class="sm-item-desc">하나의 세계가 완성되는 순간들 / 우리의 HISTORY</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">3D Interactive Carousel</span>
+          <span class="sm-item-desc">반응형 부드러운 스와이프 및 하이라이트 애니메이션</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">Lineup Showcase</span>
+          <span class="sm-item-desc">용의 눈을 가진 검사, 천재 연금술사의 만능 샵, 내 연애는 로딩 중 등 오리지널 IP</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 03. VISION -->
+    <div class="sm-card">
+      <div class="sm-header">
+        <span class="sm-num">SECTION 03</span>
+        <a class="sm-link" href="index.html#vision">VISION</a>
+      </div>
+      <ul class="sm-list">
+        <li class="sm-item">
+          <span class="sm-item-title">(DISCOVER) 01</span>
+          <span class="sm-item-desc">새로운 작가와 이야기를 발견합니다.</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">(DEVELOP) 02</span>
+          <span class="sm-item-desc">작가와 함께 작품의 가능성을 키워갑니다.</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">(CONNECT) 03</span>
+          <span class="sm-item-desc">작품과 독자, 시장을 연결합니다.</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">(EXPAND) 04</span>
+          <span class="sm-item-desc">웹툰을 넘어 다양한 IP로 확장합니다.</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 04. BUSINESS -->
+    <div class="sm-card">
+      <div class="sm-header">
+        <span class="sm-num">SECTION 04</span>
+        <a class="sm-link" href="index.html#business">BUSINESS</a>
+      </div>
+      <ul class="sm-list">
+        <li class="sm-item">
+          <span class="sm-item-title">DISCOVERY</span>
+          <span class="sm-item-desc">작가 발굴 (투고/공모전/SNS), IP 발굴 (노블코믹스 원작 소설 검토)</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">PRODUCE</span>
+          <span class="sm-item-desc">분야별 전문 인력 분업화, 스케줄 및 안정적 연재 공정 관리</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">EDITING</span>
+          <span class="sm-item-desc">스토리·가독성 디렉팅/피드백, 식자 및 타이틀 타이포그래피</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">DISTRIBUTION</span>
+          <span class="sm-item-desc">국내외 주요 플랫폼 연재(네이버/카카오 등), 메인 배너 프로모션·마케팅</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 05. CONTACT -->
+    <div class="sm-card">
+      <div class="sm-header">
+        <span class="sm-num">SECTION 05</span>
+        <a class="sm-link" href="index.html#contact">CONTACT</a>
+      </div>
+      <ul class="sm-list">
+        <li class="sm-item">
+          <span class="sm-item-title">WORK_SPACE</span>
+          <span class="sm-item-desc">HEESTORY Agency</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">LOCATION</span>
+          <span class="sm-item-desc">경기도 부천시 원미구 중동로254번길 90 (워크리움 신중동점)</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">Interactive Map</span>
+          <span class="sm-item-desc">Google Maps 공식 임베드 안내</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">EMAIL</span>
+          <span class="sm-item-desc">heestory@gmail.com</span>
+        </li>
+      </ul>
+    </div>
+
+    <!-- 06. SEO & DATA -->
+    <div class="sm-card">
+      <div class="sm-header">
+        <span class="sm-num">INDEX & SEO</span>
+        <span style="font-size:1.1rem;font-weight:900;color:var(--yellow)">META / XML</span>
+      </div>
+      <ul class="sm-list">
+        <li class="sm-item">
+          <span class="sm-item-title">Search Engine Sitemap</span>
+          <span class="sm-item-desc"><a href="sitemap.xml" target="_blank" style="color:var(--yellow);text-decoration:underline">sitemap.xml</a> (Google, Naver 크롤러 전용)</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">Robots Policy</span>
+          <span class="sm-item-desc"><a href="robots.txt" target="_blank" style="color:var(--yellow);text-decoration:underline">robots.txt</a> (전체 검색엔진 허용 정책)</span>
+        </li>
+        <li class="sm-item">
+          <span class="sm-item-title">Favicon & Identity</span>
+          <span class="sm-item-desc">LOGO.png 및 투명 심볼 적용 완료</span>
+        </li>
+      </ul>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <img class="footer-logo" src="heestory-logo.png?v=2" alt="HEESTORY">
+      <div class="footer-copy">© 2026 HEESTORY WEBTOON AGENCY. ALL RIGHTS RESERVED.</div>
+    </div>
+    <nav class="footer-nav">
+      <a class="fn" href="index.html#hero">HOME</a>
+      <a class="fn" href="index.html#works">WORKS</a>
+      <a class="fn" href="index.html#vision">VISION</a>
+      <a class="fn" href="index.html#business">BUSINESS</a>
+      <a class="fn" href="index.html#contact">CONTACT</a>
+      <a class="fn" href="sitemap.html" style="border-color:var(--yellow);color:var(--yellow)">SITEMAP</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
