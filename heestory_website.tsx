@@ -1,12 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Star, 
-  X, 
-  Sparkles,
-  ArrowUpRight
-} from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface Webtoon {
   id: number;
@@ -340,9 +333,55 @@ const WEBTOONS: Webtoon[] = [
   }
 ];
 
+const NAV = [
+  { id: 'hero', label: 'HOME' },
+  { id: 'works', label: 'WORKS' },
+  { id: 'vision', label: 'VISION' },
+  { id: 'business', label: 'BUSINESS' },
+  { id: 'contact', label: 'CONTACT' }
+] as const;
+
+const VISION = [
+  { key: 'DISCOVER', body: '새로운 작가와 이야기를 발견합니다.' },
+  { key: 'DEVELOP', body: '작가와 함께 작품의 가능성을 키워갑니다.' },
+  { key: 'CONNECT', body: '작품과 독자, 시장을 연결합니다.' },
+  { key: 'EXPAND', body: '웹툰을 넘어 다양한 IP로 확장합니다.' }
+];
+
+const BUSINESS = [
+  {
+    title: '발견',
+    items: [
+      { h: '작가 발굴', p: '투고, 공모전, SNS 등을 통한 신규 작가 투고 및 리쿠르팅' },
+      { h: 'IP 발굴', p: '웹소설, 소설, 게임 등 웹툰화(노블코믹스)가 가능한 우수 원작 소설 검토' }
+    ]
+  },
+  {
+    title: '제작',
+    items: [
+      { h: '분업화', p: '스토리 콘티, 프로젝트 기획 등 분야별 전문 인력 배치' },
+      { h: '스케줄 및 공정 관리', p: '정기적인 마감 수립 및 작가 일정 관리를 통한 안정적인 연재 환경 조성' }
+    ]
+  },
+  {
+    title: '편집',
+    items: [
+      { h: '디렉팅 및 피드백', p: '대사, 가독성, 연출 흐름 및 대사 배치 검수' },
+      { h: '식자 및 타이포그래피', p: '타이틀 로고, 대사 폰트, 효과음 디자인 등 최적의 시각적 가공' }
+    ]
+  },
+  {
+    title: '유통',
+    items: [
+      { h: '국내외 플랫폼 연재', p: '네이버, 카카오등 국내 주요 플랫폼 계약' },
+      { h: '프로모션 및 마케팅', p: '메인 노출(배너), 상위 노출 마케팅 및 프로모션 협의' }
+    ]
+  }
+];
+
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [selectedWebtoon, setSelectedWebtoon] = useState<Webtoon | null>(null);
+  const [activeNav, setActiveNav] = useState('hero');
 
   const handleNext = () => {
     setActiveIndex((prev) => (prev + 1) % WEBTOONS.length);
@@ -352,538 +391,222 @@ export default function App() {
     setActiveIndex((prev) => (prev - 1 + WEBTOONS.length) % WEBTOONS.length);
   };
 
+  const goTo = (id: string) => {
+    setActiveNav(id);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
-    <div className="min-h-screen bg-[#FCFCF9] text-stone-900 font-sans selection:bg-amber-400 selection:text-stone-950 overflow-x-hidden">
-      
-      {/* 1. GNB NAVIGATION */}
-      <header className="fixed top-0 left-0 right-0 z-50 py-4 bg-white/90 backdrop-blur-md border-b border-stone-200/80 shadow-sm transition-all">
-        <div className="max-w-7xl mx-auto px-8 flex items-center justify-between">
-          <a href="#" className="flex items-center gap-3.5 group">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-600 via-amber-500 to-yellow-400 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-105 transition-transform">
-              <div className="w-full h-full bg-stone-950 rounded-[9px] flex items-center justify-center font-black text-xl text-amber-400">
-                H
-              </div>
-            </div>
-            <div className="flex flex-col">
-              <span className="font-black text-xl tracking-wider text-stone-900">HEESTORY</span>
-              <span className="text-[10px] tracking-[0.25em] text-amber-600 font-bold uppercase">WEBTOON AGENCY</span>
-            </div>
-          </a>
-          
-          <div className="flex items-center gap-6">
-            <div className="text-xs text-stone-500 font-semibold tracking-widest uppercase hidden md:block">
-              PREMIUM WEBTOON IP STUDIO
-            </div>
-            <a 
-              href="#portfolio" 
-              className="px-4 py-2 rounded-full bg-stone-900 text-amber-400 text-xs font-bold hover:bg-amber-500 hover:text-stone-950 transition-colors shadow-sm"
+    <div className="min-h-screen bg-black text-white font-sans selection:bg-[#FFE100] selection:text-black overflow-x-hidden md:snap-y md:snap-mandatory">
+      <header className="fixed top-0 left-0 right-0 z-50 h-[65px] px-4 md:px-7 flex items-center justify-between gap-4 bg-black/45 backdrop-blur-md border-b border-[#FFE100]/20">
+        <button onClick={() => goTo('hero')} className="h-12 shrink-0 bg-transparent border-0 p-0 cursor-pointer" aria-label="HEESTORY HOME">
+          <img src="heestory-logo.jpg" alt="HEESTORY" className="h-11 w-[170px] object-cover object-center block" />
+        </button>
+        <nav className="flex items-center gap-1.5 overflow-x-auto">
+          {NAV.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => goTo(item.id)}
+              className={`font-mono text-[10px] md:text-[11px] font-bold tracking-wider px-2.5 md:px-3 py-1.5 border cursor-pointer whitespace-nowrap transition-colors ${
+                activeNav === item.id
+                  ? 'bg-[#FFE100] text-black border-[#FFE100]'
+                  : 'bg-transparent text-neutral-400 border-neutral-700 hover:border-[#FFE100] hover:text-[#FFE100]'
+              }`}
             >
-              라인업 보기
-            </a>
-          </div>
-        </div>
+              {item.label}
+            </button>
+          ))}
+        </nav>
       </header>
 
-
-      {/* 2. HERO SECTION */}
-      <section className="relative min-h-[90vh] flex items-center justify-center pt-24 pb-16 overflow-hidden">
-        
-        {/* 화이트 & 웜 크림 베이스 배경 */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FFFDF8] via-[#FAF6EE] to-[#FCFCF9] z-0" />
-        
-        {/* 은은한 엠비언트 백라이트 */}
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-tr from-amber-200/40 via-orange-100/30 to-stone-100/20 blur-[130px] rounded-full pointer-events-none" />
-
-        {/* 🌟 다이내믹 만화풍 배틀 일러스트 (용사 vs 거대 드래곤 브레스 격돌) */}
-        <div className="absolute inset-0 flex items-center justify-center pointer-events-none select-none z-10 opacity-90">
-          <svg viewBox="0 0 1440 850" fill="none" className="w-full h-auto max-h-[90vh] object-cover">
-            <defs>
-              {/* 드래곤 화염 브레스 그라데이션 */}
-              <radialGradient id="dragonBreath" cx="0.2" cy="0.4" r="0.8">
-                <stop offset="0%" stopColor="#fef08a" />
-                <stop offset="30%" stopColor="#f97316" />
-                <stop offset="70%" stopColor="#ef4444" stopOpacity="0.8" />
-                <stop offset="100%" stopColor="#7f1d1d" stopOpacity="0" />
-              </radialGradient>
-
-              {/* 용사의 검기 오라 그라데이션 */}
-              <linearGradient id="heroSwordAura" x1="0" y1="1" x2="1" y2="0">
-                <stop offset="0%" stopColor="#38bdf8" />
-                <stop offset="50%" stopColor="#818cf8" />
-                <stop offset="80%" stopColor="#fbbf24" />
-                <stop offset="100%" stopColor="#ffffff" />
-              </linearGradient>
-
-              <linearGradient id="smokeGround" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#f59e0b" stopOpacity="0.15" />
-                <stop offset="100%" stopColor="#FCFCF9" stopOpacity="1" />
-              </linearGradient>
-            </defs>
-
-            {/* 배경 만화 집중선 (Speed Lines) */}
-            <g stroke="#d97706" strokeWidth="1" opacity="0.15">
-              <line x1="0" y1="200" x2="680" y2="400" strokeDasharray="15 10" />
-              <line x1="0" y1="350" x2="680" y2="420" strokeDasharray="20 15" />
-              <line x1="1440" y1="150" x2="800" y2="380" strokeDasharray="25 15" />
-              <line x1="1440" y1="320" x2="820" y2="420" strokeDasharray="15 10" />
-            </g>
-
-            {/* [우측] 거대 화염룡 (Dragon) 캐릭터 컷 */}
-            <g transform="translate(780, 100)">
-              {/* 드래곤 브레스 폭풍 */}
-              <path d="M-40 280 Q-260 270 -420 310 Q-240 370 -20 340 Z" fill="url(#dragonBreath)" opacity="0.85" />
-              
-              {/* 드래곤 머리 & 거대한 턱 & 뿔 */}
-              <path d="M280 20 C220 30 180 80 120 140 C70 190 0 230 -60 260 C-30 280 20 285 80 265 C40 300 -10 320 -50 330 C0 360 80 340 140 310 C200 280 240 230 300 210 C360 260 460 300 520 320 L550 150 C480 110 400 40 280 20 Z" 
-                    fill="#18181b" stroke="#ca8a04" strokeWidth="3" />
-              
-              {/* 웅장한 황금 뿔 2개 */}
-              <path d="M200 70 Q280 -40 380 -50 Q310 40 250 100 Z" fill="#eab308" stroke="#fef08a" strokeWidth="2" />
-              <path d="M160 110 Q210 20 290 10 Q240 70 200 130 Z" fill="#ca8a04" />
-
-              {/* 불타오르는 황금-적색 드래곤 눈 */}
-              <ellipse cx="60" cy="220" rx="14" ry="8" fill="#fef08a" />
-              <ellipse cx="60" cy="220" rx="4" ry="8" fill="#ef4444" />
-
-              {/* 날카로운 드래곤 이빨들 */}
-              <polygon points="-20,270 0,290 15,272" fill="#ffffff" />
-              <polygon points="30,268 45,288 60,265" fill="#ffffff" />
-              <polygon points="-10,325 5,305 20,322" fill="#ffffff" />
-              <polygon points="35,320 50,302 65,318" fill="#ffffff" />
-
-              {/* 비늘 & 디테일 하이라이트 */}
-              <path d="M180 170 Q220 160 260 180 M150 210 Q190 200 230 220" stroke="#ca8a04" strokeWidth="2" fill="none" />
-            </g>
-
-            {/* [좌측] 검을 휘두르며 도약하는 용사 (Warrior) 캐릭터 */}
-            <g transform="translate(240, 240)">
-              {/* 용사의 휘날리는 푸른/붉은 망토 */}
-              <path d="M-60 240 Q-150 180 -180 290 Q-90 320 -30 290 Z" fill="#be123c" opacity="0.9" />
-              <path d="M-40 250 Q-110 320 -150 420 Q-60 380 0 320 Z" fill="#9f1239" />
-
-              {/* 용사 몸체 & 황금 플레이트 갑옷 */}
-              <path d="M-30 220 L20 180 L70 240 L30 320 L-20 300 Z" fill="#1e293b" stroke="#eab308" strokeWidth="3" />
-              {/* 어깨 견갑 & 팔 역동적 포즈 */}
-              <circle cx="20" cy="180" r="22" fill="#eab308" stroke="#fef08a" strokeWidth="2" />
-              <path d="M25 175 L120 100 L140 120 L55 200 Z" fill="#334155" />
-
-              {/* 용사 얼굴 & 흩날리는 흑발 */}
-              <polygon points="0,150 25,185 50,155 35,125 10,125" fill="#ffedd5" />
-              <path d="M-15 135 Q10 75 55 125 Q70 165 40 175 Q5 170 -15 135 Z" fill="#0f172a" />
-              <path d="M-35 150 L10 130 L-20 170 Z" fill="#1e293b" />
-              {/* 결연한 눈빛 */}
-              <circle cx="32" cy="150" r="3" fill="#38bdf8" />
-
-              {/* 솟구치는 거대한 마검 & 검기 (브레스와 정면 충돌) */}
-              {/* 대검 본체 */}
-              <path d="M125 95 L260 -20 L275 -5 L140 110 Z" fill="#f8fafc" stroke="#64748b" strokeWidth="2" />
-              {/* 검신에 깃든 폭발적인 삼색 검기 오라 */}
-              <path d="M110 120 L420 -120 L400 -70 L160 140 Z" fill="url(#heroSwordAura)" opacity="0.8" />
-              <line x1="120" y1="110" x2="480" y2="-150" stroke="#ffffff" strokeWidth="4" strokeLinecap="round" />
-            </g>
-
-            {/* 중앙 격돌 지점 스파크 파티클 */}
-            <g transform="translate(620, 390)">
-              <circle cx="0" cy="0" r="60" fill="#fef08a" opacity="0.6" />
-              <circle cx="0" cy="0" r="25" fill="#ffffff" />
-              <line x1="-80" y1="-80" x2="80" y2="80" stroke="#facc15" strokeWidth="4" />
-              <line x1="-80" y1="80" x2="80" y2="-80" stroke="#38bdf8" strokeWidth="4" />
-              <line x1="0" y1="-100" x2="0" y2="100" stroke="#f97316" strokeWidth="3" />
-            </g>
-
-            {/* 하단 안개/전장 그라운드 */}
-            <rect y="680" width="1440" height="170" fill="url(#smokeGround)" />
-          </svg>
+      <section id="hero" className="relative h-svh max-h-svh flex flex-col items-center justify-center text-center px-6 pt-[65px] snap-start">
+        <div className="inline-block mb-7 px-4 py-1.5 font-mono text-[10px] md:text-[11px] tracking-[0.28em] text-[#FFE100] bg-[#FFE100]/12 border border-[#FFE100]/45">
+          [ HEESTORY WEBTOON AGENCY ]
         </div>
-
-        {/* Hero 메인 카피 */}
-        <div className="relative z-20 max-w-5xl mx-auto px-6 text-center">
-          
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/95 border border-amber-300 shadow-md mb-6 backdrop-blur-sm">
-            <Sparkles className="w-4 h-4 text-amber-600" />
-            <span className="text-xs font-black tracking-widest text-amber-800 uppercase">
-              HEESTORY ORIGINAL IP STUDIO
-            </span>
-          </div>
-
-          <h1 className="text-5xl md:text-7xl font-black tracking-tight text-stone-900 mb-6 leading-[1.18] drop-shadow-sm">
-            당신의 이야기는<br />
-            <span className="bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
-              우리의 세계가 된다
-            </span>
-          </h1>
-
-          <p className="max-w-xl mx-auto text-lg text-stone-700 font-semibold leading-relaxed drop-shadow-sm">
-            살아 숨 쉬는 캐릭터와 압도적인 스케일의 스토리텔링,<br />
-            전 세계 독자들을 열광시키는 오리지널 웹툰을 만듭니다.
-          </p>
-
-        </div>
-
-      </section>
-
-
-      {/* 🌟 3. WHAT WE DO SECTION (DISCOVER / DEVELOP / EXPAND) */}
-      <section className="py-24 bg-white relative overflow-hidden border-t border-stone-200/70">
-        
-        {/* 배경 골드 워터마크 & 라이트 */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[300px] bg-amber-100/40 blur-[120px] pointer-events-none rounded-full" />
-        
-        <div className="max-w-7xl mx-auto px-8 relative z-10">
-          
-          {/* 섹션 헤더 */}
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-50 border border-amber-200 text-amber-700 text-xs font-black tracking-widest uppercase mb-3">
-              WHAT WE DO
-            </div>
-            <h2 className="text-3xl md:text-4xl font-black text-stone-900 tracking-tight">
-              스토리가 글로벌 IP로 완성되는 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-amber-500 to-yellow-600">3단계 여정</span>
-            </h2>
-            <p className="text-stone-500 text-sm md:text-base mt-3 font-medium">
-              독창적인 원작 발굴부터 고퀄리티 스튜디오 제작, 글로벌 미디어믹스 확장까지 체계적으로 연결합니다.
-            </p>
-          </div>
-
-          {/* 3대 핵심 기둥 그리드 (DISCOVER / DEVELOP / EXPAND) */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-            
-            {/* 연결 플로우 화살표 라인 (PC 웹) */}
-            <div className="hidden md:block absolute top-1/2 left-1/4 right-1/4 h-[2px] bg-gradient-to-r from-amber-300 via-amber-400 to-amber-300 -translate-y-12 z-0 stroke-dashed" />
-
-            {/* STEP 1: DISCOVER */}
-            <div className="group relative bg-[#FCFCF9] rounded-3xl p-8 border border-stone-200/90 shadow-lg shadow-stone-200/40 hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between">
-              
-              <div>
-                {/* 상단 스텝 뱃지 & 아이콘 */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
-                    <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-stone-900">
-                      <svg className="w-7 h-7 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        <path d="M11 8v6"></path>
-                        <path d="M8 11h6"></path>
-                      </svg>
-                    </div>
-                  </div>
-                  <span className="text-xs font-black tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                    STEP 01
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-black text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">
-                  DISCOVER
-                </h3>
-                <p className="text-xs font-bold text-amber-700 tracking-wider mb-4 uppercase">
-                  원석 IP 발굴 & 기획
-                </p>
-
-                <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  웹소설, 오리지널 시놉시스, 작가 고유의 스토리 중 글로벌 잠재력을 지닌 독창적 원석 IP를 정밀하게 발굴하고 시장성 있는 콘셉트로 정립합니다.
-                </p>
-              </div>
-
-              {/* 핵심 키워드 태그 */}
-              <div className="pt-4 border-t border-stone-200/70 flex flex-wrap gap-1.5">
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#원천스토리</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#소설원작IP</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#트렌드분석</span>
-              </div>
-            </div>
-
-            {/* STEP 2: DEVELOP */}
-            <div className="group relative bg-[#FCFCF9] rounded-3xl p-8 border border-stone-200/90 shadow-lg shadow-stone-200/40 hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between md:-translate-y-2">
-              
-              <div>
-                {/* 상단 스텝 뱃지 & 아이콘 */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-500 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
-                    <div className="w-full h-full bg-stone-950 rounded-[14px] flex items-center justify-center text-amber-400">
-                      <svg className="w-7 h-7 text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M12 19l7-7 3 3-7 7-3-3z"></path>
-                        <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"></path>
-                        <path d="M2 2l7.586 7.586"></path>
-                        <circle cx="11" cy="11" r="2"></circle>
-                      </svg>
-                    </div>
-                  </div>
-                  <span className="text-xs font-black tracking-widest text-white bg-stone-900 px-3 py-1 rounded-full border border-amber-500/40">
-                    STEP 02
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-black text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">
-                  DEVELOP
-                </h3>
-                <p className="text-xs font-bold text-amber-700 tracking-wider mb-4 uppercase">
-                  스튜디오 전문 제작 파이프라인
-                </p>
-
-                <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  각색, 콘티, 선화, 채색, 3D 배경, 후보정에 이르는 분업화된 전문 스튜디오 시스템으로 매화 극장판 수준의 고퀄리티 작화를 완성합니다.
-                </p>
-              </div>
-
-              {/* 핵심 키워드 태그 */}
-              <div className="pt-4 border-t border-stone-200/70 flex flex-wrap gap-1.5">
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#작화스튜디오</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#콘티각색</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#3D배경보정</span>
-              </div>
-            </div>
-
-            {/* STEP 3: EXPAND */}
-            <div className="group relative bg-[#FCFCF9] rounded-3xl p-8 border border-stone-200/90 shadow-lg shadow-stone-200/40 hover:shadow-xl hover:shadow-amber-500/10 hover:border-amber-400 transition-all duration-300 flex flex-col justify-between">
-              
-              <div>
-                {/* 상단 스텝 뱃지 & 아이콘 */}
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 to-yellow-400 p-[2px] shadow-md shadow-amber-500/20 group-hover:scale-110 transition-transform">
-                    <div className="w-full h-full bg-white rounded-[14px] flex items-center justify-center text-stone-900">
-                      <svg className="w-7 h-7 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <circle cx="12" cy="12" r="10"></circle>
-                        <line x1="2" y1="12" x2="22" y2="12"></line>
-                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
-                      </svg>
-                    </div>
-                  </div>
-                  <span className="text-xs font-black tracking-widest text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                    STEP 03
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-black text-stone-900 mb-1 group-hover:text-amber-600 transition-colors">
-                  EXPAND
-                </h3>
-                <p className="text-xs font-bold text-amber-700 tracking-wider mb-4 uppercase">
-                  글로벌 연재 & 미디어믹스 확장
-                </p>
-
-                <p className="text-stone-600 text-sm leading-relaxed mb-6">
-                  네이버, 카카오, 라인 등 국내외 주요 플랫폼 동시 런칭 및 영상화(드라마/영화), 애니메이션, 게임, 굿즈 등 원소스 멀티유즈(OSMU)를 실현합니다.
-                </p>
-              </div>
-
-              {/* 핵심 키워드 태그 */}
-              <div className="pt-4 border-t border-stone-200/70 flex flex-wrap gap-1.5">
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#글로벌플랫폼</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#드라마화</span>
-                <span className="text-[11px] font-semibold text-stone-600 bg-stone-100 px-2.5 py-1 rounded-md">#게임·굿즈OSMU</span>
-              </div>
-            </div>
-
-          </div>
-
+        <h1 className="font-black text-[clamp(1.8rem,5.6vw,4.6rem)] leading-[1.12] mb-6">
+          <span className="block">당신의 이야기는</span>
+          <span className="block mt-1.5 text-[#FFE100]" style={{ textShadow: '0 0 28px rgba(255,225,0,.45), 0 0 64px rgba(255,225,0,.2)' }}>
+            우리의 세계가 된다
+          </span>
+        </h1>
+        <p className="max-w-xl text-neutral-400 text-[clamp(.9rem,1.5vw,1.08rem)] leading-relaxed">
+          HEESTORY는 작가의 고유한 시선과 새로운 이야기를 발견하고, 함께 성장하며 더 넓은 세상으로 연결합니다.
+        </p>
+        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 font-mono text-[9px] tracking-[0.3em] text-neutral-500">
+          <span>SCROLL</span>
+          <div className="w-px h-9 bg-gradient-to-b from-neutral-500 to-transparent" />
         </div>
       </section>
 
+      <section id="works" className="h-auto min-h-svh md:h-svh md:max-h-svh flex flex-col justify-center pt-[72px] pb-10 px-4 md:px-10 snap-start">
+        <div className="w-full max-w-[1180px] mx-auto">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[#FFE100] mb-2.5">[ WORKS ]</p>
+          <h2 className="font-black text-[clamp(1.5rem,3.4vw,3rem)] leading-tight">하나의 세계가 완성되는 순간들</h2>
+          <p className="text-neutral-400 text-sm mt-2.5 mb-5">우리의 HISTORY</p>
 
-      {/* 4. WEBTOON PORTFOLIO CAROUSEL (캐릭터 얼굴 중심 3D 원형 링 캐러셀) */}
-      <section id="portfolio" className="py-24 bg-[#FAF7F0] border-y border-stone-200/80 relative overflow-hidden">
-        
-        {/* 골드 엠비언트 백라이트 */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[450px] bg-gradient-to-r from-amber-200/30 via-yellow-200/20 to-stone-200/30 blur-[130px] pointer-events-none rounded-full" />
-
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <span className="text-amber-600 font-extrabold text-xs tracking-widest uppercase">FEATURED LINEUP</span>
-            <h2 className="text-3xl sm:text-4xl font-black text-stone-900 mt-2">
-              히스토리 대표 <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 to-yellow-600">웹툰 라인업</span>
-            </h2>
-          </div>
-
-          {/* 3D 원형 배치 캐러셀 */}
-          <div className="relative h-[480px] flex items-center justify-center perspective-[1200px] select-none">
-            
+          <div className="relative h-[360px] md:h-[min(52svh,420px)] flex items-center justify-center [perspective:1400px] select-none">
             {WEBTOONS.map((item, index) => {
               const total = WEBTOONS.length;
               let offset = index - activeIndex;
-
               if (offset > total / 2) offset -= total;
               if (offset < -total / 2) offset += total;
-
               const absOffset = Math.abs(offset);
               const isActive = offset === 0;
-
-              const translateX = offset * 230; 
-              const translateZ = -absOffset * 180; 
-              const rotateY = offset * -16; 
-              const opacity = absOffset > 2 ? 0 : 1 - absOffset * 0.25;
+              const translateX = offset * 210;
+              const translateZ = -absOffset * 150;
+              const rotateY = offset * -16;
+              const opacity = absOffset > 2 ? 0 : 1 - absOffset * 0.28;
               const zIndex = 20 - absOffset;
 
               return (
                 <div
                   key={item.id}
-                  onClick={() => {
-                    if (isActive) setSelectedWebtoon(item);
-                    else setActiveIndex(index);
-                  }}
-                  className={`absolute w-[280px] h-[420px] rounded-2xl cursor-pointer transition-all duration-700 ease-out shadow-2xl border overflow-hidden ${
-                    isActive 
-                      ? 'border-amber-400 shadow-amber-500/30 ring-4 ring-amber-400/40 scale-105' 
-                      : 'border-stone-200 hover:border-amber-300 opacity-80 hover:opacity-100'
-                  }`}
+                  onClick={() => { if (!isActive) setActiveIndex(index); }}
+                  className="absolute w-[210px] h-[320px] md:w-[240px] md:h-[min(360px,48svh)] overflow-hidden cursor-pointer border hover:brightness-110 hover:border-[#FFE100] hover:shadow-[0_0_0_2px_#FFE100,0_12px_40px_rgba(255,225,0,0.22)]"
                   style={{
                     transform: `translateX(${translateX}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`,
-                    opacity: opacity,
-                    zIndex: zIndex,
-                    pointerEvents: opacity === 0 ? 'none' : 'auto'
+                    opacity,
+                    zIndex,
+                    pointerEvents: opacity === 0 ? 'none' : 'auto',
+                    borderColor: isActive ? '#FFE100' : '#333',
+                    borderWidth: isActive ? 2 : 1,
+                    boxShadow: isActive ? '0 0 36px rgba(255,225,0,.22)' : '0 8px 30px rgba(0,0,0,.45)',
+                    transition: 'transform 0.85s cubic-bezier(0.22, 1.18, 0.32, 1), opacity 0.55s cubic-bezier(0.22, 1.18, 0.32, 1), box-shadow 0.35s ease, filter 0.35s ease, border-color 0.35s ease'
                   }}
                 >
-                  <div className="w-full h-full relative flex flex-col justify-between p-6 bg-stone-950">
-                    
-                    {/* 상단 뱃지 */}
-                    <div className="relative z-10 flex items-center justify-between">
-                      <span className="px-2.5 py-1 rounded-md text-[11px] font-extrabold bg-black/75 backdrop-blur-md text-amber-300 border border-amber-400/40 shadow-sm">
-                        {item.badge}
-                      </span>
-                      <span className="text-[11px] font-bold text-white bg-amber-600 px-2 py-0.5 rounded-md shadow-sm">
-                        {item.genreLabel}
-                      </span>
-                    </div>
-
-                    {/* 웹툰 캐릭터 커버 일러스트 */}
-                    <div className="absolute inset-0">
-                      {item.coverArt}
-                    </div>
-
-                    {/* 하단 타이틀 & 평점 */}
-                    <div className="relative z-10 bg-gradient-to-t from-black via-black/85 to-transparent -mx-6 -mb-6 p-5 pt-14">
-                      <div className="flex items-center justify-between text-xs mb-1.5">
-                        <span className="text-stone-300 text-[11px] font-medium">{item.author}</span>
-                        <div className="flex items-center gap-1 text-amber-400 font-black text-[12px]">
-                          <Star className="w-3.5 h-3.5 fill-amber-400" />
-                          <span>{item.rating}</span>
-                        </div>
-                      </div>
-                      
-                      <h3 className="text-lg font-black text-white line-clamp-1 flex items-center justify-between">
-                        <span>{item.title}</span>
-                        {isActive && <ArrowUpRight className="w-4 h-4 text-amber-400 flex-shrink-0 ml-1" />}
-                      </h3>
+                  <div className="w-full h-full relative bg-neutral-950">
+                    <div className="absolute inset-0">{item.coverArt}</div>
+                    <div className="absolute bottom-0 left-0 right-0 z-10 bg-gradient-to-t from-black via-black/80 to-transparent px-4 pt-12 pb-4">
+                      <p className="text-[10px] font-mono text-neutral-400 mb-1">{item.author}</p>
+                      <h3 className="text-white font-black text-[15px] leading-snug">{item.title}</h3>
                     </div>
                   </div>
                 </div>
               );
             })}
-
           </div>
 
-          {/* 캐러셀 인디케이터 및 컨트롤 */}
-          <div className="flex items-center justify-center gap-6 mt-8">
+          <div className="flex items-center justify-center gap-5 mt-5">
             <button
               onClick={handlePrev}
-              className="p-3 rounded-full bg-white border border-stone-300 text-stone-700 hover:bg-amber-500 hover:text-stone-950 hover:border-amber-500 transition-colors shadow-sm"
+              className="w-[42px] h-[42px] border-2 border-[#FFE100] text-[#FFE100] bg-transparent flex items-center justify-center hover:bg-[#FFE100] hover:text-black transition-colors"
               aria-label="이전 작품"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
-
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               {WEBTOONS.map((_, idx) => (
                 <button
                   key={idx}
                   onClick={() => setActiveIndex(idx)}
-                  className={`h-2.5 rounded-full transition-all duration-300 ${
-                    activeIndex === idx ? 'w-8 bg-amber-500' : 'w-2.5 bg-stone-300'
+                  className={`h-[7px] border-0 cursor-pointer transition-all duration-500 ${
+                    activeIndex === idx ? 'w-7 bg-[#FFE100]' : 'w-2 bg-neutral-700'
                   }`}
                 />
               ))}
             </div>
-
             <button
               onClick={handleNext}
-              className="p-3 rounded-full bg-white border border-stone-300 text-stone-700 hover:bg-amber-500 hover:text-stone-950 hover:border-amber-500 transition-colors shadow-sm"
+              className="w-[42px] h-[42px] border-2 border-[#FFE100] text-[#FFE100] bg-transparent flex items-center justify-center hover:bg-[#FFE100] hover:text-black transition-colors"
               aria-label="다음 작품"
             >
               <ChevronRight className="w-5 h-5" />
             </button>
           </div>
-
         </div>
       </section>
 
+      <section id="vision" className="h-auto min-h-svh md:h-svh md:max-h-svh flex flex-col justify-center pt-[72px] pb-10 px-4 md:px-10 snap-start">
+        <div className="w-full max-w-[1180px] mx-auto">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[#FFE100] mb-2.5">[ VISION ]</p>
+          <h2 className="font-black text-[clamp(1.4rem,3.2vw,2.8rem)] leading-snug mb-8">
+            모든 이야기가 자신만의 가치를 가질 수 있도록.
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+            {VISION.map((item) => (
+              <article key={item.key} className="border border-neutral-800 bg-neutral-950 p-5 md:p-6">
+                <div className="font-mono text-[11px] tracking-[0.22em] text-[#FFE100] mb-3">({item.key})</div>
+                <p className="text-neutral-300 text-sm leading-relaxed">{item.body}</p>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {/* 4. FOOTER */}
-      <footer className="bg-white text-stone-500 border-t border-stone-200 py-10">
-        <div className="max-w-6xl mx-auto px-8 flex items-center justify-between text-xs">
-          
-          <div className="space-y-1.5">
-            <div className="flex items-center gap-2.5 mb-2">
-              <span className="font-black text-base tracking-wider text-stone-900">HEESTORY</span>
-              <span className="text-[11px] text-amber-600 font-bold">| (주)히스토리에이전시</span>
+      <section id="business" className="h-auto min-h-svh md:h-svh md:max-h-svh flex flex-col justify-center pt-[72px] pb-10 px-4 md:px-10 snap-start">
+        <div className="w-full max-w-[1180px] mx-auto">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[#FFE100] mb-2.5">[ BUSINESS ]</p>
+          <h2 className="font-black text-[clamp(1.5rem,3.4vw,3rem)] mb-6">발견부터 유통까지</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+            {BUSINESS.map((col) => (
+              <article key={col.title} className="border-t-[3px] border-[#FFE100] bg-neutral-950 p-4 md:p-5">
+                <div className="text-[#FFE100] font-black text-xl mb-4">{col.title}</div>
+                {col.items.map((item) => (
+                  <div key={item.h} className="mb-4 last:mb-0">
+                    <div className="text-white font-bold text-sm mb-1.5">{item.h}</div>
+                    <p className="text-neutral-400 text-xs leading-relaxed">{item.p}</p>
+                  </div>
+                ))}
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section id="contact" className="h-auto min-h-svh md:h-svh md:max-h-svh flex flex-col justify-center pt-[72px] pb-10 px-4 md:px-10 snap-start">
+        <div className="w-full max-w-[1180px] mx-auto">
+          <p className="font-mono text-[10px] tracking-[0.3em] text-[#FFE100] mb-2.5">[ CONTACT ]</p>
+          <h2 className="font-black text-[clamp(1.5rem,3.4vw,3rem)] mb-6">함께 만들어요.</h2>
+          <div className="grid grid-cols-1 md:grid-cols-[1.15fr_.85fr] gap-8 items-stretch">
+            <div>
+              <p className="font-mono text-[10px] tracking-[0.25em] text-[#FFE100] mb-2">— LOCATION</p>
+              <div className="relative w-full h-[240px] md:h-[min(46svh,380px)] bg-neutral-900 border border-neutral-800 overflow-hidden">
+                <iframe
+                  src="https://maps.google.com/maps?q=%EC%A4%91%EB%8F%99%EB%A1%9C254%EB%B2%88%EA%B8%B8%2090&hl=ko&z=16&output=embed"
+                  title="HEESTORY LOCATION — 중동로254번길 90"
+                  className="absolute inset-0 w-full h-full border-0"
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                  allowFullScreen
+                />
+              </div>
             </div>
-            <p className="text-stone-600">
-              대표이사: 홍길동 | 사업자등록번호: 124-87-99201 | 문의: contact@heestory.com
-            </p>
-            <p className="text-stone-400">
-              주소: 서울특별시 강남구 테헤란로 427 히스토리 타워 12층
-            </p>
+            <div className="flex flex-col justify-center gap-8">
+              <div>
+                <p className="font-mono text-[10px] tracking-[0.25em] text-[#FFE100] mb-2">— EMAIL</p>
+                <a href="mailto:heestory@gmail.com" className="font-black text-[clamp(1.05rem,2vw,1.5rem)] text-white hover:text-[#FFE100] break-all">
+                  heestory@gmail.com
+                </a>
+              </div>
+              <div>
+                <p className="font-mono text-[10px] tracking-[0.25em] text-[#FFE100] mb-2">— WORK_SPACE</p>
+                <p className="font-bold text-lg">HEESTORY Agency</p>
+                <p className="text-neutral-400 text-sm mt-1.5">중동로254번길 90</p>
+              </div>
+            </div>
           </div>
+        </div>
+      </section>
 
-          <div className="text-stone-400 text-right">
-            <p className="font-semibold">© 2026 HEESTORY AGENCY.</p>
-            <p className="text-[11px]">All Rights Reserved.</p>
+      <footer className="bg-black border-t-2 border-[#FFE100] px-7 py-5 snap-start">
+        <div className="max-w-[1180px] mx-auto flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <img src="heestory-logo.jpg" alt="HEESTORY" className="h-9 w-[150px] object-cover object-center block" />
+            <p className="font-mono text-[9px] tracking-wider text-neutral-500 mt-1">© 2026 HEESTORY WEBTOON AGENCY. ALL RIGHTS RESERVED.</p>
           </div>
-
+          <nav className="flex gap-1.5 flex-wrap">
+            {NAV.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => goTo(item.id)}
+                className="font-mono text-[10px] text-neutral-400 border border-neutral-700 px-2.5 py-1 bg-transparent cursor-pointer hover:border-[#FFE100] hover:text-[#FFE100]"
+              >
+                {item.label}
+              </button>
+            ))}
+          </nav>
         </div>
       </footer>
-
-
-      {/* 작품 상세 정보 모달 */}
-      {selectedWebtoon && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-stone-950/60 backdrop-blur-sm animate-fadeIn">
-          <div className="bg-white border border-stone-200 rounded-2xl max-w-xl w-full p-7 relative overflow-hidden shadow-2xl">
-            <button 
-              onClick={() => setSelectedWebtoon(null)}
-              className="absolute top-5 right-5 p-2 rounded-full bg-stone-100 text-stone-500 hover:bg-stone-200 hover:text-stone-900 transition-colors"
-            >
-              <X className="w-5 h-5" />
-            </button>
-
-            <div className="flex gap-6 items-start">
-              <div className="w-40 h-56 rounded-xl overflow-hidden flex-shrink-0 relative border border-stone-200 shadow-md">
-                {selectedWebtoon.coverArt}
-              </div>
-
-              <div className="flex-1 text-left">
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-0.5 rounded border border-amber-200">
-                    {selectedWebtoon.genreLabel}
-                  </span>
-                  <span className="text-xs font-bold text-stone-700 bg-stone-100 px-2 py-0.5 rounded">
-                    {selectedWebtoon.badge}
-                  </span>
-                </div>
-
-                <h3 className="text-2xl font-black text-stone-900 mb-1">{selectedWebtoon.title}</h3>
-                <p className="text-xs font-medium text-stone-500 mb-3">{selectedWebtoon.author}</p>
-
-                <p className="text-stone-600 text-xs leading-relaxed mb-5">
-                  {selectedWebtoon.description}
-                </p>
-
-                <div className="flex items-center justify-between py-2.5 px-4 rounded-xl bg-amber-50/60 border border-amber-100 text-xs text-stone-700 mb-5">
-                  <span className="font-semibold">누적 조회수 <strong className="text-stone-900">{selectedWebtoon.views}</strong></span>
-                  <span className="text-amber-600 font-bold flex items-center gap-1">
-                    <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />
-                    {selectedWebtoon.rating}
-                  </span>
-                </div>
-
-                <button 
-                  onClick={() => setSelectedWebtoon(null)}
-                  className="w-full py-3 rounded-xl bg-stone-900 text-amber-400 font-bold text-xs hover:bg-amber-500 hover:text-stone-950 transition-colors shadow-sm"
-                >
-                  닫기
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
     </div>
   );
 }
