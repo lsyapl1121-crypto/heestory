@@ -40,11 +40,11 @@ body{
 }
 .logo-group{
   display:flex;align-items:center;text-decoration:none;cursor:pointer;
-  background:none;border:none;padding:0;flex-shrink:0;height:48px
+  background:none;border:none;padding:0;flex-shrink:0;height:auto
 }
 .logo-img{
-  height:48px;width:180px;display:block;
-  object-fit:cover;object-position:center
+  height:26px;width:auto;display:block;
+  object-fit:contain;
 }
 .nav-nums{display:flex;gap:6px;align-items:center;overflow-x:auto;max-width:100%}
 .nn{
@@ -187,46 +187,91 @@ body{
 }
 .vision-card:hover .vision-divider{width:56px}
 
-/* ─── BUSINESS (light) - hover reveal ─── */
+/* ─── BUSINESS (light) - hover reveal with images ─── */
 .biz-grid{
-  display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin-top:8px;flex:1;min-height:0
+  display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:16px;
+  height:clamp(490px,60svh,565px);
 }
 .biz-col{
-  border:1px solid #ddd;
-  background:#fff;
+  border:1px solid rgba(0,0,0,.1);
+  border-radius:6px;
+  background:#0a0d14;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  min-height:200px;
   position:relative;overflow:hidden;
   cursor:default;
-  transition:all .4s ease
+  transition:border-color .35s ease,box-shadow .35s ease;
+  box-shadow:0 4px 20px rgba(0,0,0,.08);
+}
+.biz-bg{
+  position:absolute;inset:0;
+  background-size:cover;background-position:center;
+  transition:transform .65s cubic-bezier(.22,1.18,.32,1),filter .4s ease;
+  z-index:0;
+}
+.biz-overlay{
+  position:absolute;inset:0;
+  background:rgba(5,8,18,.55);
+  transition:background .4s ease,backdrop-filter .4s ease;
+  z-index:1;
 }
 .biz-col:hover{
-  background:#000;
-  border-color:var(--yellow)
+  border-color:var(--yellow);
+  box-shadow:0 14px 34px rgba(0,0,0,.28);
+}
+.biz-col:hover .biz-bg{
+  transform:scale(1.08);
+  filter:brightness(.6);
+}
+.biz-col:hover .biz-overlay{
+  background:rgba(0,0,0,.86);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
 }
 .biz-title{
-  color:#111;font-weight:900;font-size:clamp(1.3rem,2vw,1.8rem);
+  color:#fff;font-weight:900;font-size:clamp(1.15rem,1.4vw,1.6rem);
+  letter-spacing:.1em;
+  text-shadow:0 2px 14px rgba(0,0,0,.85);
   transition:all .4s ease;
-  z-index:2;position:relative
+  z-index:2;position:relative;
+  text-align:center;
+  padding:0 12px;
 }
 .biz-col:hover .biz-title{
   color:var(--yellow);
   opacity:0.2;
-  transform:translateY(-20px);
-  font-size:clamp(1rem,1.4vw,1.2rem)
+  transform:translateY(-24px);
+  font-size:clamp(.9rem,1.1vw,1.2rem);
 }
 .biz-detail{
   position:absolute;inset:0;
   display:flex;flex-direction:column;justify-content:center;
-  padding:clamp(16px,2vw,28px);padding-top:60px;
+  padding:clamp(22px,2.4vw,34px);padding-top:48px;
   opacity:0;
-  transition:opacity .4s ease;
-  z-index:1
+  transition:opacity .35s ease,transform .35s ease;
+  transform:translateY(12px);
+  z-index:3;
 }
-.biz-col:hover .biz-detail{opacity:1}
-.biz-block+.biz-block{margin-top:14px}
-.biz-h{color:var(--yellow);font-weight:700;font-size:clamp(11px,1vw,13px);margin-bottom:4px}
-.biz-p{color:rgba(255,255,255,.75);font-size:clamp(10px,.9vw,12px);line-height:1.6}
+.biz-col:hover .biz-detail{
+  opacity:1;
+  transform:translateY(0);
+}
+.biz-block+.biz-block{margin-top:26px}
+.biz-h{
+  color:var(--yellow);font-weight:700;
+  font-size:clamp(13px,1.05vw,15px);
+  margin-bottom:8px;
+  letter-spacing:.02em;
+  display:flex;align-items:center;gap:6px;
+}
+.biz-h::before{
+  content:'';display:inline-block;width:3px;height:11px;
+  background:var(--yellow);border-radius:2px;
+}
+.biz-p{
+  color:rgba(255,255,255,.88);
+  font-size:clamp(11px,.9vw,13px);
+  line-height:1.7;
+}
 
 /* ─── CONTACT (dark) ─── */
 .contact-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:stretch;min-height:0;flex:1}
@@ -247,7 +292,7 @@ footer{
   max-width:1180px;margin:0 auto;
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px
 }
-.footer-logo{height:36px;width:150px;display:block;object-fit:cover;object-position:center}
+.footer-logo{height:22px;width:auto;display:block;object-fit:contain}
 .footer-copy{font-family:var(--mono);font-size:9px;color:var(--gray3);letter-spacing:.12em;margin-top:4px}
 .footer-nav{display:flex;gap:6px;flex-wrap:wrap}
 .fn{
@@ -259,8 +304,8 @@ footer{
 
 /* ─── RESPONSIVE ─── */
 @media(max-width:860px){
-  #gnb{padding:0 12px;height:60px}
-  .logo-img{height:36px;width:132px}
+  #gnb{padding:0 16px;height:60px}
+  .logo-img{height:22px;width:auto}
   .nn{font-size:10px;padding:5px 8px}
   .sec{min-height:100svh;padding:72px 0 40px;justify-content:flex-start}
   .sec-inner{padding:0 18px;flex:none}
@@ -268,26 +313,36 @@ footer{
   .vision-card{min-height:160px}
 
   /* Business: mobile shows all content, no hover needed */
-  .biz-grid{grid-template-columns:1fr;gap:0}
+  .biz-grid{grid-template-columns:1fr;gap:16px;height:auto}
   .biz-col{
-    min-height:auto;padding:clamp(18px,3vw,24px);
+    height:auto;min-height:auto;padding:24px 20px;
     align-items:flex-start;justify-content:flex-start;
-    background:#fff;flex-direction:column
+    border-radius:6px;
+    box-shadow:0 4px 16px rgba(0,0,0,.15);
   }
-  .biz-col:hover{background:#fff;border-color:#ddd}
+  .biz-col:hover{border-color:rgba(255,225,0,.4)}
+  .biz-overlay{
+    background:rgba(4,8,18,.82);
+  }
   .biz-title{
-    color:#111;margin-bottom:12px;
-    font-size:clamp(1.1rem,4vw,1.4rem)
+    color:var(--yellow);margin-bottom:14px;
+    font-size:clamp(1.1rem,4vw,1.3rem);
+    opacity:1;transform:none;
+    text-shadow:none;
+    letter-spacing:.08em;
+    padding:0;
+    text-align:left;
   }
   .biz-col:hover .biz-title{
-    color:#111;transform:none;
-    font-size:clamp(1.1rem,4vw,1.4rem)
+    color:var(--yellow);opacity:1;transform:none;
+    font-size:clamp(1.1rem,4vw,1.3rem);
   }
   .biz-detail{
-    position:static;opacity:1;padding:0;padding-top:0
+    position:static;opacity:1;padding:0;padding-top:0;
+    transform:none;
   }
-  .biz-h{color:#333}
-  .biz-p{color:#666}
+  .biz-h{color:var(--yellow)}
+  .biz-p{color:rgba(255,255,255,.82)}
 
   .contact-grid{grid-template-columns:1fr}
   .map-wrap{height:240px}
@@ -305,7 +360,7 @@ footer{
 
 <header id="gnb">
   <button class="logo-group" onclick="goTo('hero')" aria-label="HEESTORY HOME">
-    <img class="logo-img" src="heestory-logo.jpg" alt="HEESTORY">
+    <img class="logo-img" src="heestory-logo.png?v=2" alt="HEESTORY">
   </button>
   <nav class="nav-nums">
     <button class="nn" onclick="goTo('hero')">HOME</button>
@@ -391,7 +446,9 @@ footer{
     <h2 class="sec-h2" style="margin-bottom:24px">발견부터 유통까지</h2>
     <div class="biz-grid">
       <article class="biz-col">
-        <div class="biz-title">발견</div>
+        <div class="biz-bg" style="background-image:url('biz-discover.jpg');"></div>
+        <div class="biz-overlay"></div>
+        <div class="biz-title">DISCOVERY</div>
         <div class="biz-detail">
           <div class="biz-block">
             <div class="biz-h">작가 발굴</div>
@@ -404,7 +461,9 @@ footer{
         </div>
       </article>
       <article class="biz-col">
-        <div class="biz-title">제작</div>
+        <div class="biz-bg" style="background-image:url('biz-production.jpg');"></div>
+        <div class="biz-overlay"></div>
+        <div class="biz-title">PRODUCE</div>
         <div class="biz-detail">
           <div class="biz-block">
             <div class="biz-h">분업화</div>
@@ -417,7 +476,9 @@ footer{
         </div>
       </article>
       <article class="biz-col">
-        <div class="biz-title">편집</div>
+        <div class="biz-bg" style="background-image:url('biz-editing.jpg');"></div>
+        <div class="biz-overlay"></div>
+        <div class="biz-title">EDITING</div>
         <div class="biz-detail">
           <div class="biz-block">
             <div class="biz-h">디렉팅 및 피드백</div>
@@ -430,7 +491,9 @@ footer{
         </div>
       </article>
       <article class="biz-col">
-        <div class="biz-title">유통</div>
+        <div class="biz-bg" style="background-image:url('biz-distribution.jpg');"></div>
+        <div class="biz-overlay"></div>
+        <div class="biz-title">DISTRIBUTION</div>
         <div class="biz-detail">
           <div class="biz-block">
             <div class="biz-h">국내외 플랫폼 연재</div>
@@ -482,7 +545,7 @@ footer{
 <footer>
   <div class="footer-inner">
     <div>
-      <img class="footer-logo" src="heestory-logo.jpg" alt="HEESTORY">
+      <img class="footer-logo" src="heestory-logo.png?v=2" alt="HEESTORY">
       <div class="footer-copy">© 2026 HEESTORY WEBTOON AGENCY. ALL RIGHTS RESERVED.</div>
     </div>
     <nav class="footer-nav">
